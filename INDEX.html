@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#6366f1">
+    <title>🎯 HabitForge - مصنع العادات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            
+            --bg-1: #0f0f23;
+            --bg-2: #1a1a2e;
+            --bg-3: #252541;
+            --bg-4: #2f2f4a;
+            --bg-glass: rgba(26, 26, 46, 0.7);
+            
+            --text-1: #f8fafc;
+            --text-2: #cbd5e1;
+            --text-3: #94a3b8;
+            
+            --border: rgba(99, 102, 241, 0.1);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+            
+            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --gradient-success: linear-gradient(135deg, #10b981, #34d399);
+            --gradient-danger: linear-gradient(135deg, #ef4444, #f87171);
+        }
+        
+        [data-theme="light"] {
+            --bg-1: #f8fafc;
+            --bg-2: #ffffff;
+            --bg-3: #f1f5f9;
+            --bg-4: #e2e8f0;
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            
+            --text-1: #0f172a;
+            --text-2: #334155;
+            --text-3: #64748b;
+            
+            --border: rgba(99, 102, 241, 0.15);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-1);
+            color: var(--text-1);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+            transition: background 0.3s ease;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .logo {
+            font-size: 1.4em;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            color: var(--text-1);
+        }
+        
+        .icon-btn:hover {
+            background: var(--bg-4);
+            transform: scale(1.05);
+        }
+        
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .theme-toggle {
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .stat-card {
+            background: var(--bg-3);
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-value {
+            font-size: 1.4em;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 0.7em;
+            color: var(--text-3);
+            margin-top: 2px;
+        }
+        
+        .stat-card.success .stat-value {
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card.warning .stat-value {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--bg-2);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .card-header {
+            font-size: 1em;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-header .badge {
+            margin-left: auto;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.7em;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding: 4px;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--text-2);
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        
+        /* Habit Item */
+        .habit-item {
+            background: var(--bg-3);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .habit-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+        }
+        
+        .habit-item.good::before {
+            background: var(--gradient-success);
+        }
+        
+        .habit-item.bad::before {
+            background: var(--gradient-danger);
+        }
+        
+        .habit-item.done {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        }
+        
+        .habit-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .habit-info {
+            flex: 1;
+        }
+        
+        .habit-name {
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .habit-meta {
+            font-size: 0.7em;
+            color: var(--text-3);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .habit-tag {
+            background: rgba(99, 102, 241, 0.15);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .habit-actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .check-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--bg-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+        }
+        
+        .check-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .check-btn.checked {
+            background: var(--gradient-success);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+        
+        .habit-progress {
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-4);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 0.5s;
+            border-radius: 8px;
+        }
+        
+        .progress-text {
+            font-size: 0.7em;
+            color: var(--text-3);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Streak Calendar */
+        .streak-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        .streak-day {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: 700;
+            color: var(--text-3);
+            position: relative;
+        }
+        
+        .streak-day.done {
+            background: var(--gradient-success);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .streak-day.failed {
+            background: var(--gradient-danger);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .streak-day.today {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        /* Challenge Card */
+        .challenge-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .challenge-title {
+            font-size: 0.95em;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .challenge-type {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 700;
+        }
+        
+        .challenge-desc {
+            font-size: 0.8em;
+            color: var(--text-2);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .challenge-reward {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px dashed rgba(251, 191, 36, 0.4);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            color: var(--warning);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Button */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Cairo';
+            font-size: 0.9em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn:active {
+            transform: scale(0.96);
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-success {
+            background: var(--gradient-success);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-danger {
+            background: var(--gradient-danger);
+            color: white;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-2);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--bg-4);
+            border-radius: 4px;
+            margin: 12px auto;
+        }
+        
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1em;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.15);
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-3);
+            color: var(--text-1);
+            font-family: 'Cairo';
+            font-size: 0.9em;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-radio-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-radio {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-3);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+        
+        .form-radio.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .form-radio.good.active {
+            background: var(--gradient-success);
+        }
+        
+        .form-radio.bad.active {
+            background: var(--gradient-danger);
+        }
+        
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 0;
+            flex: 1;
+            cursor: pointer;
+            font-size: 0.7em;
+            color: var(--text-3);
+            font-weight: 700;
+            border: none;
+            background: none;
+            transition: all 0.3s;
+        }
+        
+        .nav-item .nav-icon {
+            font-size: 1.6em;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item.active .nav-icon {
+            transform: scale(1.2);
+        }
+        
+        /* Page */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .toast {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-lg);
+            animation: toastIn 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9em;
+        }
+        
+        @keyframes toastIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .toast-success {
+            background: var(--gradient-success);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .toast-error {
+            background: var(--gradient-danger);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .toast-warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-3);
+        }
+        
+        .empty-state .icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 0.8em;
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+            
+            .modal-content {
+                border-radius: 24px;
+                margin: auto;
+                max-height: 85vh;
+            }
+            
+            .modal-handle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-top">
+        <div class="logo">
+            <span>🎯</span>
+            <span>HabitForge</span>
+        </div>
+        <div class="header-actions">
+            <div class="icon-btn theme-toggle" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span>
+            </div>
+            <div class="icon-btn" onclick="openSettings()">
+                <span>⚙️</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats-bar">
+        <div class="stat-card success">
+            <div class="stat-value" id="totalPoints">0</div>
+            <div class="stat-label">نقاط</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="currentStreak">0</div>
+            <div class="stat-label">🔥 Streak</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-value" id="habitCount">0</div>
+            <div class="stat-label">عادات</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="completionRate">0%</div>
+            <div class="stat-label">إنجاز</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    
+    <!-- Home Page -->
+    <div class="page active" id="homePage">
+        
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <span>⚡</span>
+                <span>إجراءات سريعة</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <button class="btn btn-primary" onclick="openAddHabit()">
+                    <span>➕</span>
+                    <span>عادة جديدة</span>
+                </button>
+                <button class="btn btn-outline" onclick="getAIAdvice()">
+                    <span>🤖</span>
+                    <span>نصيحة AI</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Today's Habits -->
+        <div class="card">
+            <div class="card-header">
+                <span>📅</span>
+                <span>عادات اليوم</span>
+                <span class="badge" id="todayBadge">0/0</span>
+            </div>
+            
+            <div class="tabs" id="habitTypeTabs">
+                <div class="tab active" onclick="filterHabits('all')">الكل</div>
+                <div class="tab" onclick="filterHabits('good')">✅ جيدة</div>
+                <div class="tab" onclick="filterHabits('bad')">❌ سيئة</div>
+            </div>
+            
+            <div id="habitList"></div>
+        </div>
+    </div>
+    
+    <!-- Challenges Page -->
+    <div class="page" id="challengesPage">
+        <div class="card">
+            <div class="card-header">
+                <span>🎮</span>
+                <span>التحديات النشطة</span>
+            </div>
+            <div id="challengeList"></div>
+        </div>
+    </div>
+    
+    <!-- Progress Page -->
+    <div class="page" id="progressPage">
+        <div class="card">
+            <div class="card-header">
+                <span>📊</span>
+                <span>تتبع التقدم</span>
+            </div>
+            <div id="progressContent"></div>
+        </div>
+    </div>
+    
+    <!-- AI Coach Page -->
+    <div class="page" id="aiPage">
+        <div class="card">
+            <div class="card-header">
+                <span>🤖</span>
+                <span>المدرب الذكي</span>
+            </div>
+            <div id="aiContent"></div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('home', this)">
+        <span class="nav-icon">🏠</span>
+        <span>الرئيسية</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('challenges', this)">
+        <span class="nav-icon">🎮</span>
+        <span>التحديات</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('progress', this)">
+        <span class="nav-icon">📊</span>
+        <span>التقدم</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('ai', this)">
+        <span class="nav-icon">🤖</span>
+        <span>AI</span>
+    </button>
+</div>
+
+<!-- Add Habit Modal -->
+<div class="modal" id="addHabitModal">
+    <div class="modal-content">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <div class="modal-title">➕ إضافة عادة جديدة</div>
+            <button class="modal-close" onclick="closeModal('addHabitModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form onsubmit="addHabit(event)">
+                <div class="form-group">
+                    <label class="form-label">نوع العادة</label>
+                    <div class="form-radio-group">
+                        <div class="form-radio good active" onclick="selectHabitType('good', this)">
+                            <div>✅ عادة جيدة</div>
+                        </div>
+                        <div class="form-radio bad" onclick="selectHabitType('bad', this)">
+                            <div>❌ عادة سيئة</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="habitType" value="good">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">اسم العادة</label>
+                    <input type="text" class="form-input" id="habitName" placeholder="مثال: تمرين 30 دقيقة" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">الهدف (أيام في الأسبوع)</label>
+                    <select class="form-select" id="habitGoal">
+                        <option value="7">كل يوم (7 أيام)</option>
+                        <option value="6">6 أيام في الأسبوع</option>
+                        <option value="5">5 أيام في الأسبوع</option>
+                        <option value="4">4 أيام في الأسبوع</option>
+                        <option value="3">3 أيام في الأسبوع</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">المكافأة (عند النجاح)</label>
+                    <input type="text" class="form-input" id="habitReward" placeholder="مثال: مشاهدة فيلم">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">العقاب (عند الفشل)</label>
+                    <input type="text" class="form-input" id="habitPunishment" placeholder="مثال: تبرع 50 جنيه">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span>💾</span>
+                    <span>حفظ العادة</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal" id="settingsModal">
+    <div class="modal-content">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <div class="modal-title">⚙️ الإعدادات</div>
+            <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">🔑 Groq API Key</label>
+                <input type="password" class="form-input" id="apiKeyInput" placeholder="أدخل API Key">
+                <button class="btn btn-primary btn-full" onclick="saveAPIKey()" style="margin-top: 10px;">
+                    💾 حفظ
+                </button>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 14px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; font-size: 0.8em; line-height: 1.6;">
+                <strong>ℹ️ كيف تحصل على API Key:</strong><br>
+                1. اذهب إلى console.groq.com<br>
+                2. سجل حساب مجاني<br>
+                3. API Keys ← أنشئ key<br>
+                4. انسخه والصقه هنا
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button class="btn btn-danger btn-full" onclick="resetAllData()">
+                    🗑️ حذف جميع البيانات
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================
+// 🔥 DATA STRUCTURE
+// ============================================
+
+const STORAGE_KEY = 'habitforge_v1';
+
+let DATA = {
+    habits: [],
+    completions: {},
+    stats: {
+        totalPoints: 0,
+        currentStreak: 0,
+        bestStreak: 0,
+        totalCompletions: 0
+    },
+    challenges: [],
+    settings: {
+        apiKey: '',
+        theme: 'dark'
+    }
+};
+
+let currentFilter = 'all';
+let selectedHabitType = 'good';
+
+// ============================================
+// 🚀 INITIALIZATION
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    renderHabits();
+    renderStats();
+    renderChallenges();
+    initTheme();
+    generateDailyChallenges();
+});
+
+function loadData() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            DATA = { ...DATA, ...JSON.parse(saved) };
+        }
+        
+        // Load API key
+        if (DATA.settings.apiKey) {
+            document.getElementById('apiKeyInput').value = DATA.settings.apiKey;
+        }
+    } catch (e) {
+        console.error('Error loading data:', e);
+    }
+}
+
+function saveData() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+    } catch (e) {
+        console.error('Error saving data:', e);
+        showToast('خطأ في حفظ البيانات', 'error');
+    }
+}
+
+// تابع في الرد القادم... (الكود كبير جداً)
+
+console.log('✅ HabitForge Loaded - Part 1/3');
+</script>
+
+</body>
+</html>
