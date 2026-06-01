@@ -1,1148 +1,720 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#6366f1">
-    <title>🎯 HabitForge - مصنع العادات</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #ec4899;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            
-            --bg-1: #0f0f23;
-            --bg-2: #1a1a2e;
-            --bg-3: #252541;
-            --bg-4: #2f2f4a;
-            --bg-glass: rgba(26, 26, 46, 0.7);
-            
-            --text-1: #f8fafc;
-            --text-2: #cbd5e1;
-            --text-3: #94a3b8;
-            
-            --border: rgba(99, 102, 241, 0.1);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-            
-            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
-            --gradient-success: linear-gradient(135deg, #10b981, #34d399);
-            --gradient-danger: linear-gradient(135deg, #ef4444, #f87171);
-        }
-        
-        [data-theme="light"] {
-            --bg-1: #f8fafc;
-            --bg-2: #ffffff;
-            --bg-3: #f1f5f9;
-            --bg-4: #e2e8f0;
-            --bg-glass: rgba(255, 255, 255, 0.7);
-            
-            --text-1: #0f172a;
-            --text-2: #334155;
-            --text-3: #64748b;
-            
-            --border: rgba(99, 102, 241, 0.15);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
-        }
-        
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: var(--bg-1);
-            color: var(--text-1);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 80px;
-            transition: background 0.3s ease;
-        }
-        
-        /* Header */
-        .header {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 16px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .logo {
-            font-size: 1.4em;
-            font-weight: 900;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--bg-3);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: all 0.3s;
-            color: var(--text-1);
-        }
-        
-        .icon-btn:hover {
-            background: var(--bg-4);
-            transform: scale(1.05);
-        }
-        
-        .icon-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .theme-toggle {
-            animation: rotate 20s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Stats Bar */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .stat-card {
-            background: var(--bg-3);
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-        
-        .stat-value {
-            font-size: 1.4em;
-            font-weight: 900;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .stat-label {
-            font-size: 0.7em;
-            color: var(--text-3);
-            margin-top: 2px;
-        }
-        
-        .stat-card.success .stat-value {
-            background: var(--gradient-success);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .stat-card.warning .stat-value {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* Container */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-        
-        /* Card */
-        .card {
-            background: var(--bg-2);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .card-header {
-            font-size: 1em;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .card-header .badge {
-            margin-left: auto;
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.7em;
-        }
-        
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            overflow-x: auto;
-            padding: 4px;
-        }
-        
-        .tabs::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            border-radius: 12px;
-            background: var(--bg-3);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 700;
-            color: var(--text-2);
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        
-        .tab.active {
-            background: var(--gradient-primary);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-        }
-        
-        /* Habit Item */
-        .habit-item {
-            background: var(--bg-3);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 10px;
-            border: 2px solid var(--border);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .habit-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gradient-primary);
-        }
-        
-        .habit-item.good::before {
-            background: var(--gradient-success);
-        }
-        
-        .habit-item.bad::before {
-            background: var(--gradient-danger);
-        }
-        
-        .habit-item.done {
-            border-color: var(--success);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-        }
-        
-        .habit-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-        
-        .habit-info {
-            flex: 1;
-        }
-        
-        .habit-name {
-            font-size: 0.95em;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .habit-meta {
-            font-size: 0.7em;
-            color: var(--text-3);
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .habit-tag {
-            background: rgba(99, 102, 241, 0.15);
-            padding: 2px 8px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        
-        .habit-actions {
-            display: flex;
-            gap: 6px;
-        }
-        
-        .check-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            border: 2px solid var(--border);
-            background: var(--bg-2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: all 0.3s;
-        }
-        
-        .check-btn:active {
-            transform: scale(0.9);
-        }
-        
-        .check-btn.checked {
-            background: var(--gradient-success);
-            border-color: transparent;
-            color: white;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-        }
-        
-        .habit-progress {
-            margin-top: 10px;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: var(--bg-4);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 6px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-primary);
-            transition: width 0.5s;
-            border-radius: 8px;
-        }
-        
-        .progress-text {
-            font-size: 0.7em;
-            color: var(--text-3);
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        /* Streak Calendar */
-        .streak-calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            margin-top: 10px;
-        }
-        
-        .streak-day {
-            aspect-ratio: 1;
-            border-radius: 10px;
-            background: var(--bg-3);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7em;
-            font-weight: 700;
-            color: var(--text-3);
-            position: relative;
-        }
-        
-        .streak-day.done {
-            background: var(--gradient-success);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .streak-day.failed {
-            background: var(--gradient-danger);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .streak-day.today {
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-        
-        /* Challenge Card */
-        .challenge-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .challenge-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            animation: shimmer 3s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
-        .challenge-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .challenge-title {
-            font-size: 0.95em;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        
-        .challenge-type {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 10px;
-            font-size: 0.7em;
-            font-weight: 700;
-        }
-        
-        .challenge-desc {
-            font-size: 0.8em;
-            color: var(--text-2);
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-        
-        .challenge-reward {
-            background: rgba(251, 191, 36, 0.15);
-            border: 1px dashed rgba(251, 191, 36, 0.4);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 0.75em;
-            color: var(--warning);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        /* Button */
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Cairo';
-            font-size: 0.9em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-        }
-        
-        .btn:active {
-            transform: scale(0.96);
-        }
-        
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-        }
-        
-        .btn-success {
-            background: var(--gradient-success);
-            color: white;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
-        }
-        
-        .btn-danger {
-            background: var(--gradient-danger);
-            color: white;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-        
-        .btn-full {
-            width: 100%;
-        }
-        
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.8em;
-        }
-        
-        /* Modal */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 0;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: var(--bg-2);
-            border-radius: 24px 24px 0 0;
-            width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s;
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        
-        .modal-handle {
-            width: 40px;
-            height: 4px;
-            background: var(--bg-4);
-            border-radius: 4px;
-            margin: 12px auto;
-        }
-        
-        .modal-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-title {
-            font-size: 1em;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            background: rgba(239, 68, 68, 0.15);
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-body {
-            padding: 20px;
-        }
-        
-        /* Form */
-        .form-group {
-            margin-bottom: 16px;
-        }
-        
-        .form-label {
-            display: block;
-            font-size: 0.85em;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-        
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg-3);
-            color: var(--text-1);
-            font-family: 'Cairo';
-            font-size: 0.9em;
-            outline: none;
-            transition: all 0.3s;
-        }
-        
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-        
-        .form-textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .form-radio-group {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .form-radio {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg-3);
-            cursor: pointer;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.85em;
-            transition: all 0.3s;
-        }
-        
-        .form-radio.active {
-            background: var(--gradient-primary);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .form-radio.good.active {
-            background: var(--gradient-success);
-        }
-        
-        .form-radio.bad.active {
-            background: var(--gradient-danger);
-        }
-        
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0;
-            padding-bottom: max(8px, env(safe-area-inset-bottom));
-            z-index: 100;
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 0;
-            flex: 1;
-            cursor: pointer;
-            font-size: 0.7em;
-            color: var(--text-3);
-            font-weight: 700;
-            border: none;
-            background: none;
-            transition: all 0.3s;
-        }
-        
-        .nav-item .nav-icon {
-            font-size: 1.6em;
-            transition: all 0.3s;
-        }
-        
-        .nav-item.active {
-            color: var(--primary);
-        }
-        
-        .nav-item.active .nav-icon {
-            transform: scale(1.2);
-        }
-        
-        /* Page */
-        .page {
-            display: none;
-        }
-        
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Toast */
-        .toast-container {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2000;
-            width: 90%;
-            max-width: 400px;
-        }
-        
-        .toast {
-            background: var(--bg-2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 10px;
-            box-shadow: var(--shadow-lg);
-            animation: toastIn 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9em;
-        }
-        
-        @keyframes toastIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .toast-success {
-            background: var(--gradient-success);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .toast-error {
-            background: var(--gradient-danger);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .toast-warning {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            color: white;
-            border-color: transparent;
-        }
-        
-        /* Loading */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-3);
-        }
-        
-        .empty-state .icon {
-            font-size: 3em;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-        
-        .empty-state h3 {
-            font-size: 0.95em;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .empty-state p {
-            font-size: 0.8em;
-        }
-        
-        /* Responsive */
-        @media (min-width: 768px) {
-            .container {
-                padding: 24px;
-            }
-            
-            .modal-content {
-                border-radius: 24px;
-                margin: auto;
-                max-height: 85vh;
-            }
-            
-            .modal-handle {
-                display: none;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إعادة ضبط الدماغ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    color: #fff;
+    padding: 20px;
+  }
+
+  .container { max-width: 480px; margin: 0 auto; }
+
+  h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    color: #a78bfa;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 24px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+    gap: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: #7c3aed;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  /* CARD */
+  .card {
+    background: rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .card h2 {
+    font-size: 1rem;
+    margin-bottom: 14px;
+    color: #c4b5fd;
+  }
+
+  /* COUNTER */
+  .counter-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: conic-gradient(#7c3aed 0deg, rgba(124,58,237,0.15) 0deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    position: relative;
+    transition: all 0.5s;
+    box-shadow: 0 0 30px rgba(124,58,237,0.3);
+  }
+
+  .counter-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .counter-label {
+    font-size: 0.75rem;
+    color: #c4b5fd;
+    margin-top: 4px;
+  }
+
+  .phase-badge {
+    text-align: center;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin: 0 auto 16px;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .phase-text {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+  }
+
+  .btn-primary { background: #7c3aed; color: #fff; }
+  .btn-primary:hover { background: #6d28d9; transform: translateY(-1px); }
+  .btn-danger { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .btn-danger:hover { background: rgba(239,68,68,0.25); }
+  .btn-success { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+
+  /* TASKS */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .task-item:hover { background: rgba(255,255,255,0.08); }
+  .task-item.done { border-color: rgba(34,197,94,0.3); }
+
+  .task-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #7c3aed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .task-item.done .task-checkbox {
+    background: #22c55e;
+    border-color: #22c55e;
+  }
+
+  .task-text { flex: 1; font-size: 0.85rem; line-height: 1.4; }
+  .task-item.done .task-text { text-decoration: line-through; color: #64748b; }
+  .task-xp { font-size: 0.75rem; color: #a78bfa; }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    height: 8px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+    transition: width 0.4s;
+  }
+
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 6px;
+  }
+
+  /* SCIENCE */
+  .science-card {
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.05);
+    border-right: 3px solid #7c3aed;
+  }
+
+  .science-card h3 { font-size: 0.85rem; color: #c4b5fd; margin-bottom: 6px; }
+  .science-card p { font-size: 0.8rem; color: #94a3b8; line-height: 1.6; }
+
+  /* RELAPSE */
+  .relapse-item {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    color: #fca5a5;
+  }
+
+  .relapse-date { font-size: 0.72rem; color: #64748b; margin-bottom: 4px; }
+
+  .urge-tips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .urge-tip {
+    background: rgba(124,58,237,0.15);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(124,58,237,0.2);
+  }
+
+  .urge-tip:hover { background: rgba(124,58,237,0.3); transform: scale(1.02); }
+  .urge-tip .icon { font-size: 1.4rem; margin-bottom: 4px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    display: none;
+  }
+
+  .modal {
+    background: #1e1b4b;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    border: 1px solid rgba(124,58,237,0.3);
+  }
+
+  .modal h3 { color: #c4b5fd; margin-bottom: 12px; font-size: 1rem; }
+  .modal p { color: #94a3b8; font-size: 0.85rem; line-height: 1.6; margin-bottom: 16px; }
+  .modal textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+    font-size: 0.85rem;
+    resize: none;
+    height: 80px;
+    margin-bottom: 12px;
+    font-family: inherit;
+  }
+
+  .hidden { display: none !important; }
+
+  .streak-milestones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .milestone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .milestone-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: all 0.3s;
+  }
+
+  .milestone-dot.reached { background: #a78bfa; box-shadow: 0 0 8px #7c3aed; }
+  .milestone-label { font-size: 0.65rem; color: #64748b; }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #7c3aed;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: transform 0.3s;
+    z-index: 200;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .section { display: none; }
+  .section.active { display: block; }
+</style>
 </head>
 <body>
 
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- Header -->
-<div class="header">
-    <div class="header-top">
-        <div class="logo">
-            <span>🎯</span>
-            <span>HabitForge</span>
-        </div>
-        <div class="header-actions">
-            <div class="icon-btn theme-toggle" onclick="toggleTheme()">
-                <span id="themeIcon">🌙</span>
-            </div>
-            <div class="icon-btn" onclick="openSettings()">
-                <span>⚙️</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="stats-bar">
-        <div class="stat-card success">
-            <div class="stat-value" id="totalPoints">0</div>
-            <div class="stat-label">نقاط</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="currentStreak">0</div>
-            <div class="stat-label">🔥 Streak</div>
-        </div>
-        <div class="stat-card warning">
-            <div class="stat-value" id="habitCount">0</div>
-            <div class="stat-label">عادات</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="completionRate">0%</div>
-            <div class="stat-label">إنجاز</div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Content -->
 <div class="container">
-    
-    <!-- Home Page -->
-    <div class="page active" id="homePage">
-        
-        <!-- Quick Actions -->
-        <div class="card">
-            <div class="card-header">
-                <span>⚡</span>
-                <span>إجراءات سريعة</span>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                <button class="btn btn-primary" onclick="openAddHabit()">
-                    <span>➕</span>
-                    <span>عادة جديدة</span>
-                </button>
-                <button class="btn btn-outline" onclick="getAIAdvice()">
-                    <span>🤖</span>
-                    <span>نصيحة AI</span>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Today's Habits -->
-        <div class="card">
-            <div class="card-header">
-                <span>📅</span>
-                <span>عادات اليوم</span>
-                <span class="badge" id="todayBadge">0/0</span>
-            </div>
-            
-            <div class="tabs" id="habitTypeTabs">
-                <div class="tab active" onclick="filterHabits('all')">الكل</div>
-                <div class="tab" onclick="filterHabits('good')">✅ جيدة</div>
-                <div class="tab" onclick="filterHabits('bad')">❌ سيئة</div>
-            </div>
-            
-            <div id="habitList"></div>
-        </div>
+  <h1>🧠 إعادة ضبط الدماغ</h1>
+  <p class="subtitle">رحلتك نحو حياة أوضح وأقوى</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(0)">🏠 اليوم</button>
+    <button class="tab" onclick="switchTab(1)">📊 تقدمي</button>
+    <button class="tab" onclick="switchTab(2)">🔬 علم</button>
+    <button class="tab" onclick="switchTab(3)">⚡ إغراء</button>
+  </div>
+
+  <!-- TAB 0: TODAY -->
+  <div class="section active" id="tab0">
+    <div class="card">
+      <h2>⏱ عداد التعافي</h2>
+      <div class="counter-circle" id="counterCircle">
+        <div class="counter-number" id="dayCount">0</div>
+        <div class="counter-label">يوم نظيف</div>
+      </div>
+      <div class="phase-badge" id="phaseBadge"></div>
+      <p class="phase-text" id="phaseText"></p>
+      <div class="streak-milestones">
+        <div class="milestone"><div class="milestone-dot" id="m7"></div><div class="milestone-label">7 أيام</div></div>
+        <div class="milestone"><div class="milestone-dot" id="m14"></div><div class="milestone-label">14 يوم</div></div>
+        <div class="milestone"><div class="milestone-dot" id="m30"></div><div class="milestone-label">30 يوم</div></div>
+        <div class="milestone"><div class="milestone-dot" id="m60"></div><div class="milestone-label">60 يوم</div></div>
+        <div class="milestone"><div class="milestone-dot" id="m90"></div><div class="milestone-label">90 يوم</div></div>
+      </div>
     </div>
-    
-    <!-- Challenges Page -->
-    <div class="page" id="challengesPage">
-        <div class="card">
-            <div class="card-header">
-                <span>🎮</span>
-                <span>التحديات النشطة</span>
-            </div>
-            <div id="challengeList"></div>
-        </div>
+
+    <div class="card">
+      <h2>✅ مهام اليوم</h2>
+      <div id="taskList"></div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="taskProgress" style="width:0%"></div>
+      </div>
+      <div class="progress-text">
+        <span id="taskDoneCount">0 مهام مكتملة</span>
+        <span id="taskPercent">0%</span>
+      </div>
     </div>
-    
-    <!-- Progress Page -->
-    <div class="page" id="progressPage">
-        <div class="card">
-            <div class="card-header">
-                <span>📊</span>
-                <span>تتبع التقدم</span>
-            </div>
-            <div id="progressContent"></div>
+  </div>
+
+  <!-- TAB 1: PROGRESS -->
+  <div class="section" id="tab1">
+    <div class="card">
+      <h2>📈 إحصائياتي</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="background:rgba(124,58,237,0.15);border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-size:2rem;font-weight:bold;color:#a78bfa;" id="statBest">0</div>
+          <div style="font-size:0.75rem;color:#94a3b8;">أطول سلسلة</div>
         </div>
-    </div>
-    
-    <!-- AI Coach Page -->
-    <div class="page" id="aiPage">
-        <div class="card">
-            <div class="card-header">
-                <span>🤖</span>
-                <span>المدرب الذكي</span>
-            </div>
-            <div id="aiContent"></div>
+        <div style="background:rgba(34,197,94,0.1);border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-size:2rem;font-weight:bold;color:#4ade80;" id="statCurrent">0</div>
+          <div style="font-size:0.75rem;color:#94a3b8;">السلسلة الحالية</div>
         </div>
+        <div style="background:rgba(239,68,68,0.1);border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-size:2rem;font-weight:bold;color:#f87171;" id="statRelapses">0</div>
+          <div style="font-size:0.75rem;color:#94a3b8;">انتكاسة</div>
+        </div>
+        <div style="background:rgba(251,191,36,0.1);border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-size:2rem;font-weight:bold;color:#fbbf24;" id="statTasks">0</div>
+          <div style="font-size:0.75rem;color:#94a3b8;">مهمة مكتملة</div>
+        </div>
+      </div>
     </div>
-    
+
+    <div class="card">
+      <h2>📅 سجل الانتكاسات</h2>
+      <div id="relapseList">
+        <p style="color:#64748b;font-size:0.85rem;text-align:center;padding:10px;">لا توجد انتكاسات مسجلة — رائع! 🎉</p>
+      </div>
+      <button class="btn btn-danger" onclick="showRelapseModal()">⚠️ تسجيل انتكاسة</button>
+    </div>
+  </div>
+
+  <!-- TAB 2: SCIENCE -->
+  <div class="section" id="tab2">
+    <div class="card">
+      <h2>🔬 ماذا يحدث لدماغك؟</h2>
+
+      <div class="science-card">
+        <h3>🧪 الدوبامين والإدمان</h3>
+        <p>المحتوى الإباحي يطلق دوبامين بمستويات تفوق المحفزات الطبيعية 2-3 مرات. مع الوقت، يقل عدد مستقبلات الدوبامين، مما يجعل اللذة الطبيعية تبدو باهتة وغير كافية.</p>
+      </div>
+
+      <div class="science-card">
+        <h3>⏳ جدول التعافي العلمي</h3>
+        <p>
+          <strong style="color:#c4b5fd;">أيام 1-7:</strong> انسحاب، تهيج، صعوبة تركيز<br>
+          <strong style="color:#c4b5fd;">أيام 8-30:</strong> بدء إعادة بناء المستقبلات<br>
+          <strong style="color:#c4b5fd;">أيام 31-60:</strong> تحسن واضح في التركيز والطاقة<br>
+          <strong style="color:#c4b5fd;">أيام 61-90+:</strong> إعادة ضبط شبه كاملة
+        </p>
+      </div>
+
+      <div class="science-card">
+        <h3>📱 تعفن الدماغ (Brain Rot)</h3>
+        <p>التمرير اللانهائي على منصات التواصل يدمر قدرة الدماغ على التركيز. الفيديوهات القصيرة تعيد برمجة الدماغ ليتوقع مكافأة كل 15 ثانية، مما يجعل المهام الطويلة مستحيلة.</p>
+      </div>
+
+      <div class="science-card">
+        <h3>💡 ما يعيد بناء الدوبامين</h3>
+        <p>
+          ✅ النوم الجيد (8 ساعات)<br>
+          ✅ التمرين البدني (يرفع الدوبامين 200%)<br>
+          ✅ التعرض للشمس في الصباح<br>
+          ✅ الصيام المتقطع<br>
+          ✅ الأهداف الصغيرة القابلة للتحقق
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: URGE -->
+  <div class="section" id="tab3">
+    <div class="card">
+      <h2>⚡ أنا في إغراء الآن</h2>
+      <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:14px;">لا بأس، هذا طبيعي. الإغراء يدوم فقط 10-20 دقيقة ثم يزول. اختر أحد هذه الإجراءات الآن:</p>
+
+      <div class="urge-tips">
+        <div class="urge-tip" onclick="urgeAction('coldWater')">
+          <div class="icon">🚿</div>
+          ماء بارد على الوجه
+        </div>
+        <div class="urge-tip" onclick="urgeAction('breathe')">
+          <div class="icon">🌬️</div>
+          تنفس 4-7-8
+        </div>
+        <div class="urge-tip" onclick="urgeAction('move')">
+          <div class="icon">🏃</div>
+          10 دقائق مشي
+        </div>
+        <div class="urge-tip" onclick="urgeAction('reason')">
+          <div class="icon">📝</div>
+          تذكر سببك
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="urgeActionCard" style="display:none;">
+      <div id="urgeActionContent"></div>
+    </div>
+
+    <div class="card">
+      <h2>💪 تذكر دائماً</h2>
+      <div id="motivationQuote" style="font-size:0.9rem;color:#c4b5fd;line-height:1.7;text-align:center;padding:10px;"></div>
+      <button class="btn btn-success" onclick="newQuote()" style="margin-top:10px;">🔄 اقتباس جديد</button>
+    </div>
+  </div>
 </div>
 
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-    <button class="nav-item active" onclick="switchPage('home', this)">
-        <span class="nav-icon">🏠</span>
-        <span>الرئيسية</span>
-    </button>
-    <button class="nav-item" onclick="switchPage('challenges', this)">
-        <span class="nav-icon">🎮</span>
-        <span>التحديات</span>
-    </button>
-    <button class="nav-item" onclick="switchPage('progress', this)">
-        <span class="nav-icon">📊</span>
-        <span>التقدم</span>
-    </button>
-    <button class="nav-item" onclick="switchPage('ai', this)">
-        <span class="nav-icon">🤖</span>
-        <span>AI</span>
-    </button>
+<!-- RELAPSE MODAL -->
+<div class="modal-overlay" id="relapseModal" onclick="closeModal(event)">
+  <div class="modal">
+    <h3>⚠️ تسجيل انتكاسة</h3>
+    <p>لا بأس — كل انتكاسة هي درس. ما الذي أدى إليها؟</p>
+    <textarea id="relapseTrigger" placeholder="مثال: كنت وحيداً في الليل وتعبت..."></textarea>
+    <button class="btn btn-danger" onclick="confirmRelapse()">تسجيل وإعادة البدء</button>
+    <button class="btn btn-primary" onclick="document.getElementById('relapseModal').style.display='none'">إلغاء</button>
+  </div>
 </div>
 
-<!-- Add Habit Modal -->
-<div class="modal" id="addHabitModal">
-    <div class="modal-content">
-        <div class="modal-handle"></div>
-        <div class="modal-header">
-            <div class="modal-title">➕ إضافة عادة جديدة</div>
-            <button class="modal-close" onclick="closeModal('addHabitModal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form onsubmit="addHabit(event)">
-                <div class="form-group">
-                    <label class="form-label">نوع العادة</label>
-                    <div class="form-radio-group">
-                        <div class="form-radio good active" onclick="selectHabitType('good', this)">
-                            <div>✅ عادة جيدة</div>
-                        </div>
-                        <div class="form-radio bad" onclick="selectHabitType('bad', this)">
-                            <div>❌ عادة سيئة</div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="habitType" value="good">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">اسم العادة</label>
-                    <input type="text" class="form-input" id="habitName" placeholder="مثال: تمرين 30 دقيقة" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">الهدف (أيام في الأسبوع)</label>
-                    <select class="form-select" id="habitGoal">
-                        <option value="7">كل يوم (7 أيام)</option>
-                        <option value="6">6 أيام في الأسبوع</option>
-                        <option value="5">5 أيام في الأسبوع</option>
-                        <option value="4">4 أيام في الأسبوع</option>
-                        <option value="3">3 أيام في الأسبوع</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">المكافأة (عند النجاح)</label>
-                    <input type="text" class="form-input" id="habitReward" placeholder="مثال: مشاهدة فيلم">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">العقاب (عند الفشل)</label>
-                    <input type="text" class="form-input" id="habitPunishment" placeholder="مثال: تبرع 50 جنيه">
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-full">
-                    <span>💾</span>
-                    <span>حفظ العادة</span>
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Settings Modal -->
-<div class="modal" id="settingsModal">
-    <div class="modal-content">
-        <div class="modal-handle"></div>
-        <div class="modal-header">
-            <div class="modal-title">⚙️ الإعدادات</div>
-            <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">🔑 Groq API Key</label>
-                <input type="password" class="form-input" id="apiKeyInput" placeholder="أدخل API Key">
-                <button class="btn btn-primary btn-full" onclick="saveAPIKey()" style="margin-top: 10px;">
-                    💾 حفظ
-                </button>
-            </div>
-            
-            <div style="margin-top: 20px; padding: 14px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; font-size: 0.8em; line-height: 1.6;">
-                <strong>ℹ️ كيف تحصل على API Key:</strong><br>
-                1. اذهب إلى console.groq.com<br>
-                2. سجل حساب مجاني<br>
-                3. API Keys ← أنشئ key<br>
-                4. انسخه والصقه هنا
-            </div>
-            
-            <div style="margin-top: 20px;">
-                <button class="btn btn-danger btn-full" onclick="resetAllData()">
-                    🗑️ حذف جميع البيانات
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ============================================
-// 🔥 DATA STRUCTURE
-// ============================================
-
-const STORAGE_KEY = 'habitforge_v1';
-
-let DATA = {
-    habits: [],
-    completions: {},
-    stats: {
-        totalPoints: 0,
-        currentStreak: 0,
-        bestStreak: 0,
-        totalCompletions: 0
-    },
-    challenges: [],
-    settings: {
-        apiKey: '',
-        theme: 'dark'
-    }
+// =========== STATE ===========
+let state = JSON.parse(localStorage.getItem('brainReset') || 'null') || {
+  startDate: new Date().toISOString(),
+  relapses: [],
+  tasksDoneTotal: 0,
+  bestStreak: 0,
+  todayTasks: {},
+  lastTaskReset: new Date().toDateString()
 };
 
-let currentFilter = 'all';
-let selectedHabitType = 'good';
+const TASKS = [
+  { id: 't1', text: 'صلِّ الفجر أو استيقظ مبكراً 🌅', xp: 10 },
+  { id: 't2', text: 'لا هاتف 30 دقيقة بعد الاستيقاظ 📵', xp: 15 },
+  { id: 't3', text: 'تمرين أو مشي 20 دقيقة على الأقل 🏃', xp: 20 },
+  { id: 't4', text: 'اقرأ أو تعلم شيئاً مفيداً 30 دقيقة 📚', xp: 15 },
+  { id: 't5', text: 'لا سكر أو طعام مضر اليوم 🥗', xp: 10 },
+  { id: 't6', text: 'نم قبل الساعة 11 مساءً 🌙', xp: 20 },
+];
 
-// ============================================
-// 🚀 INITIALIZATION
-// ============================================
+const QUOTES = [
+  "الانضباط هو الحرية الحقيقية. كل مرة تقاوم فيها، تعيد بناء نفسك.",
+  "دماغك يتغير كل يوم — إما تبنيه أو تهدمه. أنت تختار.",
+  "الإغراء يدوم 20 دقيقة. ندم السنين يدوم سنين.",
+  "أقوى الرجال هم من يتحكمون في أنفسهم، لا فيمن حولهم.",
+  "كل يوم نظيف هو خلايا عصبية جديدة تنمو في دماغك.",
+  "لست مدمناً — أنت إنسان يتعلم كيف يعيش بشكل أفضل.",
+  "المعركة ليست ضد الرغبة — بل معها. اعترف بها ثم تجاوزها."
+];
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    renderHabits();
-    renderStats();
-    renderChallenges();
-    initTheme();
-    generateDailyChallenges();
-});
+const PHASES = [
+  { max: 7, label: '🔴 مرحلة الانسحاب', color: '#ef4444', text: 'الأيام الأولى هي الأصعب. جسمك يتكيف. الأعراض طبيعية تماماً — صمد.' },
+  { max: 14, label: '🟠 إعادة التوازن', color: '#f97316', text: 'دماغك يبدأ في إصلاح المستقبلات. قد تشعر بتحسن ثم تراجع — هذا طبيعي.' },
+  { max: 30, label: '🟡 بداية التعافي', color: '#eab308', text: 'الدوبامين يعود تدريجياً. ستلاحظ تحسناً في التركيز والطاقة.' },
+  { max: 60, label: '🟢 التعافي الفعلي', color: '#22c55e', text: 'دماغك يعيد برمجة نفسه. الأمور الجميلة في الحياة تبدأ بالعودة.' },
+  { max: 90, label: '💙 إعادة الضبط', color: '#3b82f6', text: 'مستويات الدوبامين تقترب من الطبيعي. أنت في المرحلة المتقدمة!' },
+  { max: Infinity, label: '💜 تحرر كامل', color: '#a78bfa', text: 'أنت في مرحلة التحرر. دماغك تغير بشكل حقيقي. واصل.' },
+];
 
-function loadData() {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            DATA = { ...DATA, ...JSON.parse(saved) };
-        }
-        
-        // Load API key
-        if (DATA.settings.apiKey) {
-            document.getElementById('apiKeyInput').value = DATA.settings.apiKey;
-        }
-    } catch (e) {
-        console.error('Error loading data:', e);
-    }
+const URGE_ACTIONS = {
+  coldWater: { icon: '🚿', title: 'ماء بارد على الوجه', steps: 'اذهب للحمام الآن. اغسل وجهك بماء بارد 5 مرات متتالية. الصدمة الحرارية تكسر حلقة الإغراء فوراً.' },
+  breathe: { icon: '🌬️', title: 'تنفس 4-7-8', steps: 'استنشق 4 ثوان ← احبس 7 ثوان ← أخرج ببطء 8 ثوان. كرر 4 مرات. هذا يفعّل الجهاز العصبي الهادئ.' },
+  move: { icon: '🏃', title: '10 دقائق مشي', steps: 'اخرج من الغرفة الآن. امشِ 10 دقائق في أي مكان. الحركة تحول مسار الدوبامين فوراً.' },
+  reason: { icon: '📝', title: 'تذكر سببك', steps: 'اكتب على ورقة الآن: لماذا أفعل هذا؟ ماذا سأخسر إذا انتكست؟ من سيتأثر؟' },
+};
+
+// =========== INIT ===========
+function init() {
+  resetDailyTasks();
+  renderAll();
+  newQuote();
 }
 
-function saveData() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
-    } catch (e) {
-        console.error('Error saving data:', e);
-        showToast('خطأ في حفظ البيانات', 'error');
-    }
+function resetDailyTasks() {
+  const today = new Date().toDateString();
+  if (state.lastTaskReset !== today) {
+    state.todayTasks = {};
+    state.lastTaskReset = today;
+    save();
+  }
 }
 
-// تابع في الرد القادم... (الكود كبير جداً)
+function getDays() {
+  return Math.floor((Date.now() - new Date(state.startDate)) / 86400000);
+}
 
-console.log('✅ HabitForge Loaded - Part 1/3');
+function getPhase(days) {
+  for (let p of PHASES) if (days <= p.max) return p;
+  return PHASES[PHASES.length - 1];
+}
+
+function renderAll() {
+  const days = getDays();
+  const phase = getPhase(days);
+
+  // Counter
+  document.getElementById('dayCount').textContent = days;
+  document.getElementById('phaseBadge').textContent = phase.label;
+  document.getElementById('phaseBadge').style.background = phase.color + '33';
+  document.getElementById('phaseBadge').style.color = phase.color;
+  document.getElementById('phaseText').textContent = phase.text;
+
+  // Circle gradient
+  const deg = Math.min((days / 90) * 360, 360);
+  document.getElementById('counterCircle').style.background =
+    `conic-gradient(${phase.color} ${deg}deg, rgba(255,255,255,0.05) ${deg}deg)`;
+
+  // Milestones
+  [7, 14, 30, 60, 90].forEach(m => {
+    const el = document.getElementById('m' + m);
+    if (days >= m) el.classList.add('reached');
+    else el.classList.remove('reached');
+  });
+
+  // Stats
+  document.getElementById('statCurrent').textContent = days;
+  document.getElementById('statBest').textContent = Math.max(state.bestStreak, days);
+  document.getElementById('statRelapses').textContent = state.relapses.length;
+  document.getElementById('statTasks').textContent = state.tasksDoneTotal;
+
+  // Tasks
+  renderTasks();
+
+  // Relapses
+  renderRelapses();
+}
+
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  list.innerHTML = '';
+  let done = 0;
+
+  TASKS.forEach(task => {
+    const isDone = !!state.todayTasks[task.id];
+    if (isDone) done++;
+    const div = document.createElement('div');
+    div.className = 'task-item' + (isDone ? ' done' : '');
+    div.onclick = () => toggleTask(task.id);
+    div.innerHTML = `
+      <div class="task-checkbox">${isDone ? '✓' : ''}</div>
+      <div class="task-text">${task.text}</div>
+      <div class="task-xp">+${task.xp}</div>
+    `;
+    list.appendChild(div);
+  });
+
+  const pct = Math.round((done / TASKS.length) * 100);
+  document.getElementById('taskProgress').style.width = pct + '%';
+  document.getElementById('taskDoneCount').textContent = done + ' من ' + TASKS.length;
+  document.getElementById('taskPercent').textContent = pct + '%';
+}
+
+function toggleTask(id) {
+  if (state.todayTasks[id]) {
+    delete state.todayTasks[id];
+  } else {
+    state.todayTasks[id] = true;
+    state.tasksDoneTotal++;
+    showToast('✅ أحسنت! استمر!');
+  }
+  save();
+  renderTasks();
+  document.getElementById('statTasks').textContent = state.tasksDoneTotal;
+}
+
+function renderRelapses() {
+  const list = document.getElementById('relapseList');
+  if (state.relapses.length === 0) {
+    list.innerHTML = '<p style="color:#64748b;font-size:0.85rem;text-align:center;padding:10px;">لا توجد انتكاسات مسجلة — رائع! 🎉</p>';
+    return;
+  }
+  list.innerHTML = '';
+  [...state.relapses].reverse().slice(0, 5).forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'relapse-item';
+    div.innerHTML = `<div class="relapse-date">${new Date(r.date).toLocaleDateString('ar')}</div>${r.trigger || 'لم يُذكر سبب'}`;
+    list.appendChild(div);
+  });
+}
+
+function showRelapseModal() {
+  document.getElementById('relapseModal').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (e.target.id === 'relapseModal') document.getElementById('relapseModal').style.display = 'none';
+}
+
+function confirmRelapse() {
+  const trigger = document.getElementById('relapseTrigger').value;
+  const days = getDays();
+  state.bestStreak = Math.max(state.bestStreak, days);
+  state.relapses.push({ date: new Date().toISOString(), trigger, daysStreak: days });
+  state.startDate = new Date().toISOString();
+  document.getElementById('relapseModal').style.display = 'none';
+  document.getElementById('relapseTrigger').value = '';
+  save();
+  renderAll();
+  showToast('💪 إعادة البدء — أنت أقوى مما تعتقد!');
+}
+
+function urgeAction(type) {
+  const a = URGE_ACTIONS[type];
+  const card = document.getElementById('urgeActionCard');
+  document.getElementById('urgeActionContent').innerHTML = `
+    <h2>${a.icon} ${a.title}</h2>
+    <p style="color:#c4b5fd;font-size:0.9rem;line-height:1.7;margin-top:10px;">${a.steps}</p>
+    <button class="btn btn-success" style="margin-top:14px;" onclick="document.getElementById('urgeActionCard').style.display='none'">✅ تم</button>
+  `;
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth' });
+}
+
+function newQuote() {
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  document.getElementById('motivationQuote').textContent = '"' + q + '"';
+}
+
+function switchTab(i) {
+  document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
+  document.querySelectorAll('.section').forEach((s, idx) => s.classList.toggle('active', idx === i));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function save() {
+  localStorage.setItem('brainReset', JSON.stringify(state));
+}
+
+init();
 </script>
-
 </body>
 </html>
