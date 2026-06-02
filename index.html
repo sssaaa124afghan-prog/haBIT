@@ -3,497 +3,776 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إعادة ضبط الدماغ</title>
+<title>Shadow Monarch System</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    color: #fff;
-    padding: 20px;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@400;600;700&display=swap');
 
-  .container { max-width: 480px; margin: 0 auto; }
+:root {
+  --bg0:      #03060f;
+  --bg1:      #060d1a;
+  --bg2:      #091422;
+  --panel:    rgba(6,14,28,0.92);
+  --blue:     #4fc3f7;
+  --blue2:    #0288d1;
+  --blue-g:   rgba(79,195,247,0.18);
+  --blue-gw:  rgba(79,195,247,0.08);
+  --gold:     #f0c040;
+  --gold-g:   rgba(240,192,64,0.25);
+  --purple:   #9c6fff;
+  --purple-g: rgba(156,111,255,0.2);
+  --red:      #ff4444;
+  --red-g:    rgba(255,68,68,0.15);
+  --green:    #39ff8a;
+  --white:    #e8f4fc;
+  --dim:      #2a4a6a;
+  --dimmer:   #122033;
+  --border:   rgba(79,195,247,0.18);
+  --border2:  rgba(79,195,247,0.06);
+}
 
-  h1 {
-    text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 6px;
-    color: #a78bfa;
-  }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-  .subtitle {
-    text-align: center;
-    font-size: 0.85rem;
-    color: #94a3b8;
-    margin-bottom: 24px;
-  }
+html { scroll-behavior: smooth; }
 
-  /* TABS */
-  .tabs {
-    display: flex;
-    background: rgba(255,255,255,0.07);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 20px;
-    gap: 4px;
-  }
+body {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  background: var(--bg0);
+  min-height: 100vh;
+  color: var(--white);
+  overflow-x: hidden;
+}
 
-  .tab {
-    flex: 1;
-    padding: 8px 4px;
-    border: none;
-    border-radius: 9px;
-    background: transparent;
-    color: #94a3b8;
-    cursor: pointer;
-    font-size: 0.78rem;
-    transition: all 0.2s;
-  }
+/* ── BACKGROUND ── */
+.bg-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+}
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(79,195,247,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,195,247,0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  width: 100%; height: 100%;
+}
+.bg-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+}
+.bg-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+  );
+}
 
-  .tab.active {
-    background: #7c3aed;
-    color: #fff;
-    font-weight: bold;
-  }
+/* ── PARTICLES ── */
+#ptx { position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden; }
+.pt {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: ptFloat linear infinite;
+  pointer-events: none;
+}
+@keyframes ptFloat {
+  0%   { transform: translateY(105vh) scale(0); opacity: 0; }
+  5%   { opacity: 1; transform: translateY(95vh) scale(1); }
+  95%  { opacity: 0.4; }
+  100% { transform: translateY(-5vh) scale(0.5); opacity: 0; }
+}
 
-  /* CARD */
-  .card {
-    background: rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
+/* ── WRAP ── */
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 480px; margin: 0 auto;
+  padding: 0 14px 32px;
+}
 
-  .card h2 {
-    font-size: 1rem;
-    margin-bottom: 14px;
-    color: #c4b5fd;
-  }
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 28px 0 18px;
+  position: relative;
+}
+.header::after {
+  content: '';
+  display: block;
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  margin: 14px auto 0;
+}
+.header-tag {
+  font-size: .62rem; letter-spacing: 5px;
+  color: var(--dim); text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.header-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem; font-weight: 900;
+  color: var(--blue);
+  text-shadow: 0 0 30px rgba(79,195,247,.5), 0 0 60px rgba(79,195,247,.15);
+  letter-spacing: 4px;
+}
+.header-sub {
+  font-size: .65rem; letter-spacing: 6px;
+  color: var(--dimmer); margin-top: 4px;
+  text-transform: uppercase;
+}
 
-  /* COUNTER */
-  .counter-circle {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: conic-gradient(#7c3aed 0deg, rgba(124,58,237,0.15) 0deg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-    position: relative;
-    transition: all 0.5s;
-    box-shadow: 0 0 30px rgba(124,58,237,0.3);
-  }
+/* ── HUNTER CARD ── */
+.hcard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+  animation: cardIn .6s ease both;
+}
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.hcard::before,.hcard::after {
+  content: ''; position: absolute;
+  left:0; right:0; height: 1px;
+}
+.hcard::before { top:0; background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+.hcard::after  { bottom:0; background: linear-gradient(90deg, transparent, var(--blue2), transparent); }
 
-  .counter-number {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #fff;
-    line-height: 1;
-  }
+/* corner decorations */
+.hcard .corner {
+  position: absolute; width: 10px; height: 10px;
+  border-color: var(--blue); border-style: solid;
+}
+.hcard .corner.tl { top:0; right:0; border-width: 1px 0 0 1px; }
+.hcard .corner.tr { top:0; left:0;  border-width: 1px 1px 0 0; }
+.hcard .corner.bl { bottom:0; right:0; border-width: 0 0 1px 1px; }
+.hcard .corner.br { bottom:0; left:0;  border-width: 0 1px 1px 0; }
 
-  .counter-label {
-    font-size: 0.75rem;
-    color: #c4b5fd;
-    margin-top: 4px;
-  }
+.hcard-inner { padding: 20px; }
 
-  .phase-badge {
-    text-align: center;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    margin: 0 auto 16px;
-    display: inline-block;
-    width: 100%;
-  }
+/* RANK ROW */
+.rank-row {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; margin-bottom: 18px;
+}
+.rank-left { display:flex; align-items:center; gap:14px; }
+.rank-hex {
+  width: 64px; height: 72px;
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display: flex; align-items:center; justify-content:center;
+  font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 900;
+  transition: all .5s;
+  position: relative;
+  flex-shrink: 0;
+}
+.rank-hex::before {
+  content:''; position:absolute; inset:2px;
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background: var(--bg0);
+  z-index:0;
+}
+.rank-hex span { position:relative; z-index:1; }
 
-  .phase-text {
-    text-align: center;
-    font-size: 0.82rem;
-    color: #94a3b8;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
+.rank-info { display:flex; flex-direction:column; gap:3px; }
+.rank-tag { font-size:.6rem; letter-spacing:3px; color:var(--dim); }
+.rank-name { font-family:'Cinzel',serif; font-size:.9rem; font-weight:600; }
+.rank-days-label { font-size:.6rem; letter-spacing:2px; color:var(--dim); margin-top:2px; }
 
-  .btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 8px;
-  }
+.days-block { text-align:left; }
+.days-num {
+  font-family:'Cinzel',serif; font-size:3.5rem; font-weight:900;
+  color:var(--blue); line-height:1;
+  text-shadow: 0 0 30px rgba(79,195,247,.4);
+  transition: all .3s;
+}
+.days-unit { font-size:.6rem; letter-spacing:3px; color:var(--dim); text-align:center; }
 
-  .btn-primary { background: #7c3aed; color: #fff; }
-  .btn-primary:hover { background: #6d28d9; transform: translateY(-1px); }
-  .btn-danger { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-  .btn-danger:hover { background: rgba(239,68,68,0.25); }
-  .btn-success { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+/* XP BAR */
+.xp-wrap { margin-bottom:16px; }
+.xp-head { display:flex; justify-content:space-between; font-size:.65rem; margin-bottom:5px; }
+.xp-lbl { letter-spacing:2px; color:var(--dim); }
+.xp-val { color:var(--blue); font-weight:600; }
+.xp-track {
+  height:5px; background:var(--bg2);
+  border:1px solid var(--border2); position:relative;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+.xp-fill {
+  height:100%;
+  background: linear-gradient(90deg, var(--blue2), var(--blue));
+  box-shadow: 0 0 12px rgba(79,195,247,.6);
+  transition: width .7s cubic-bezier(.4,0,.2,1);
+  position:relative;
+}
+.xp-fill::after {
+  content:''; position:absolute;
+  right:0; top:-1px; bottom:-1px; width:3px;
+  background:#fff; box-shadow:0 0 6px var(--blue);
+  animation: xpPulse .8s ease-in-out infinite alternate;
+}
+@keyframes xpPulse { from{opacity:1} to{opacity:0.2} }
 
-  /* TASKS */
-  .task-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.05);
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-  }
+/* STATS GRID */
+.stats-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:6px;
+  margin-bottom:14px;
+}
+.stat {
+  background: var(--bg2);
+  border:1px solid var(--border2);
+  padding: 8px 6px;
+  clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  text-align:center;
+  transition: all .2s;
+}
+.stat:hover { border-color:var(--border); background:var(--blue-gw); }
+.stat-n { font-size:.55rem; letter-spacing:2px; color:var(--dim); margin-bottom:3px; }
+.stat-v {
+  font-family:'Cinzel',serif; font-size:1.3rem; font-weight:700;
+  color:var(--blue);
+  text-shadow:0 0 10px rgba(79,195,247,.3);
+  transition: all .3s;
+}
 
-  .task-item:hover { background: rgba(255,255,255,0.08); }
-  .task-item.done { border-color: rgba(34,197,94,0.3); }
+/* MILESTONES */
+.ms-row { display:flex; justify-content:space-between; padding:0 4px; }
+.ms { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.ms-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--dimmer); border:1px solid var(--dim);
+  transition:all .4s;
+}
+.ms-dot.lit {
+  background:var(--blue); border-color:var(--blue);
+  box-shadow: 0 0 8px var(--blue), 0 0 16px rgba(79,195,247,.3);
+  animation: msGlow 2s ease-in-out infinite alternate;
+}
+@keyframes msGlow { from{box-shadow:0 0 6px var(--blue)} to{box-shadow:0 0 14px var(--blue),0 0 28px rgba(79,195,247,.4)} }
+.ms-l { font-size:.5rem; color:var(--dimmer); letter-spacing:1px; }
 
-  .task-checkbox {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid #7c3aed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.2s;
-  }
+/* ── TABS ── */
+.tabs {
+  display:flex; gap:2px; margin-bottom:12px;
+  background:var(--bg1); border:1px solid var(--border2);
+  padding:3px;
+}
+.tab {
+  flex:1; padding:9px 4px;
+  background:transparent; border:none;
+  color:var(--dim); font-size:.62rem; letter-spacing:1.5px;
+  cursor:pointer; font-family:'Rajdhani',sans-serif; font-weight:600;
+  transition:all .2s; text-transform:uppercase;
+  position:relative;
+}
+.tab::after {
+  content:''; position:absolute;
+  bottom:0; left:20%; right:20%; height:1px;
+  background:var(--blue); transform:scaleX(0);
+  transition:transform .25s;
+}
+.tab.active {
+  color:var(--blue);
+  background:var(--blue-gw);
+  text-shadow:0 0 10px rgba(79,195,247,.4);
+}
+.tab.active::after { transform:scaleX(1); }
+.tab:hover:not(.active) { color:#7ab8d8; }
 
-  .task-item.done .task-checkbox {
-    background: #22c55e;
-    border-color: #22c55e;
-  }
+/* ── SECTION ── */
+.section { display:none; animation: secIn .3s ease both; }
+.section.active { display:block; }
+@keyframes secIn {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 
-  .task-text { flex: 1; font-size: 0.85rem; line-height: 1.4; }
-  .task-item.done .task-text { text-decoration: line-through; color: #64748b; }
-  .task-xp { font-size: 0.75rem; color: #a78bfa; }
+/* ── PANEL ── */
+.panel {
+  background:var(--panel); border:1px solid var(--border);
+  position:relative; overflow:hidden;
+  margin-bottom:10px; padding:16px;
+}
+.panel::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--blue),transparent);
+}
+.panel-title {
+  font-size:.62rem; letter-spacing:3px; color:var(--blue);
+  text-transform:uppercase; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid var(--border2);
+  display:flex; align-items:center; gap:8px;
+}
+.panel-title::before { content:'◈'; color:var(--blue); font-size:.6rem; }
 
-  .progress-bar-wrap {
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    height: 8px;
-    margin-top: 14px;
-    overflow: hidden;
-  }
+/* ── QUESTS ── */
+.quest {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 12px;
+  border:1px solid var(--border2);
+  background:var(--bg2); margin-bottom:6px;
+  cursor:pointer; transition:all .2s;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  position:relative; overflow:hidden;
+}
+.quest::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,var(--blue-g),transparent);
+  transform:translateX(-100%); transition:transform .3s;
+}
+.quest:hover::before { transform:translateX(0); }
+.quest:hover { border-color:var(--border); }
+.quest.done {
+  border-color:rgba(57,255,138,.15);
+  background:rgba(57,255,138,.04);
+}
+.quest.done::before { display:none; }
 
-  .progress-bar-fill {
-    height: 100%;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #7c3aed, #a78bfa);
-    transition: width 0.4s;
-  }
+.q-box {
+  width:16px; height:16px;
+  border:1px solid rgba(79,195,247,.4);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:.65rem; transition:all .25s;
+  clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
+}
+.quest.done .q-box {
+  background:var(--green); border-color:var(--green);
+  color:var(--bg0); font-weight:bold;
+  box-shadow:0 0 8px rgba(57,255,138,.5);
+}
+.q-text { flex:1; font-size:.82rem; color:#8ab4cc; transition:all .2s; }
+.quest:hover .q-text { color:var(--white); }
+.quest.done .q-text { color:var(--dimmer); text-decoration:line-through; }
+.q-xp { font-size:.7rem; color:var(--gold); letter-spacing:1px; white-space:nowrap; }
 
-  .progress-text {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #94a3b8;
-    margin-top: 6px;
-  }
+.qp-wrap { margin-top:12px; }
+.qp-track {
+  height:3px; background:var(--bg2);
+  border:1px solid var(--border2); margin-bottom:5px;
+}
+.qp-fill {
+  height:100%; background:linear-gradient(90deg,var(--blue2),var(--blue));
+  box-shadow:0 0 8px rgba(79,195,247,.5); transition:width .5s;
+}
+.qp-meta { display:flex; justify-content:space-between; font-size:.6rem; color:var(--dim); letter-spacing:1px; }
 
-  /* SCIENCE */
-  .science-card {
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
-    background: rgba(255,255,255,0.05);
-    border-right: 3px solid #7c3aed;
-  }
+/* ── SHADOW ARMY ── */
+.shadow-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.sh-card {
+  border:1px solid var(--border2); background:var(--bg2);
+  padding:14px 8px; text-align:center;
+  transition:all .3s; cursor:default; position:relative; overflow:hidden;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+}
+.sh-card::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 50%, var(--purple-g), transparent 70%);
+  opacity:0; transition:opacity .3s;
+}
+.sh-card.unlocked {
+  border-color:rgba(156,111,255,.3);
+  box-shadow:0 0 20px rgba(156,111,255,.15);
+  animation: shAlive 3s ease-in-out infinite alternate;
+}
+.sh-card.unlocked::before { opacity:1; }
+@keyframes shAlive {
+  from { box-shadow:0 0 10px rgba(156,111,255,.1); }
+  to   { box-shadow:0 0 25px rgba(156,111,255,.3); }
+}
+.sh-card.locked { opacity:.3; filter:grayscale(1) brightness(.5); }
+.sh-icon { font-size:1.9rem; margin-bottom:5px; display:block; position:relative; z-index:1; }
+.sh-name { font-size:.62rem; color:var(--blue); letter-spacing:1px; position:relative; z-index:1; }
+.sh-card.unlocked .sh-name { text-shadow:0 0 8px rgba(79,195,247,.5); }
+.sh-sub { font-size:.55rem; color:var(--dimmer); margin-top:2px; position:relative; z-index:1; }
+.sh-card.unlocked .sh-sub { color:rgba(156,111,255,.7); }
 
-  .science-card h3 { font-size: 0.85rem; color: #c4b5fd; margin-bottom: 6px; }
-  .science-card p { font-size: 0.8rem; color: #94a3b8; line-height: 1.6; }
+.army-count {
+  margin-top:12px; padding:10px;
+  border:1px solid var(--border2);
+  background:var(--bg2); text-align:center;
+  font-size:.65rem; letter-spacing:2px; color:var(--dim);
+}
+.army-count span { color:var(--purple); font-weight:700; font-size:.9rem; }
 
-  /* RELAPSE */
-  .relapse-item {
-    background: rgba(239,68,68,0.08);
-    border: 1px solid rgba(239,68,68,0.2);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 8px;
-    font-size: 0.82rem;
-    color: #fca5a5;
-  }
+/* ── STATUS ── */
+.stat-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.stat-card {
+  background:var(--bg2); border:1px solid var(--border2);
+  padding:14px; text-align:center;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition:all .2s;
+}
+.stat-card:hover { border-color:var(--border); }
+.sc-val {
+  font-family:'Cinzel',serif; font-size:2.2rem; font-weight:900; line-height:1;
+  transition:all .3s;
+}
+.sc-lbl { font-size:.58rem; letter-spacing:2px; color:var(--dim); margin-top:4px; }
 
-  .relapse-date { font-size: 0.72rem; color: #64748b; margin-bottom: 4px; }
+.relapse-entry {
+  background:rgba(255,68,68,.06); border:1px solid rgba(255,68,68,.15);
+  padding:10px 12px; margin-bottom:6px; font-size:.78rem; color:#cc7070;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
+.relapse-meta { font-size:.6rem; color:var(--dim); margin-bottom:3px; letter-spacing:1px; }
 
-  .urge-tips {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 10px;
-  }
+/* ── LORE ── */
+.lore {
+  border:1px solid var(--border2); border-right:2px solid var(--blue);
+  padding:12px; margin-bottom:8px;
+  background:rgba(3,6,15,.7);
+  transition:all .2s;
+}
+.lore:hover { border-right-color:var(--gold); background:var(--bg2); }
+.lore h3 { font-size:.72rem; color:var(--blue); letter-spacing:2px; margin-bottom:6px; }
+.lore p  { font-size:.77rem; color:#4a7a9b; line-height:1.75; }
 
-  .urge-tip {
-    background: rgba(124,58,237,0.15);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    font-size: 0.78rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid rgba(124,58,237,0.2);
-  }
+/* ── URGE ── */
+.urge-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.urge-btn {
+  border:1px solid var(--border2); background:var(--bg2);
+  padding:16px 8px; text-align:center; cursor:pointer;
+  font-size:.75rem; color:var(--dim); letter-spacing:1px;
+  transition:all .2s;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  position:relative; overflow:hidden;
+}
+.urge-btn::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--blue-g), transparent);
+  opacity:0; transition:opacity .2s;
+}
+.urge-btn:hover { border-color:var(--border); color:var(--blue); }
+.urge-btn:hover::before { opacity:1; }
+.urge-btn .u-i { font-size:1.6rem; margin-bottom:6px; display:block; }
 
-  .urge-tip:hover { background: rgba(124,58,237,0.3); transform: scale(1.02); }
-  .urge-tip .icon { font-size: 1.4rem; margin-bottom: 4px; }
+.urge-action {
+  display:none; border:1px solid var(--border);
+  padding:14px; margin-top:10px; background:var(--bg2);
+  animation: secIn .3s ease;
+}
+.urge-action h3 { font-size:.75rem; color:var(--blue); letter-spacing:2px; margin-bottom:8px; }
+.urge-action p  { font-size:.8rem; color:#4a7a9b; line-height:1.75; }
 
-  /* MODAL */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 20px;
-    display: none;
-  }
+.quote-box {
+  border:1px solid var(--border2); border-right:2px solid var(--gold);
+  padding:14px; margin-top:10px;
+  font-size:.82rem; color:#5a7a8a; line-height:1.8; font-style:italic;
+  background:var(--bg2);
+}
 
-  .modal {
-    background: #1e1b4b;
-    border-radius: 16px;
-    padding: 24px;
-    max-width: 400px;
-    width: 100%;
-    border: 1px solid rgba(124,58,237,0.3);
-  }
+/* ── BUTTONS ── */
+.btn {
+  display:block; width:100%; padding:11px;
+  background:transparent; font-family:'Rajdhani',sans-serif;
+  font-size:.75rem; letter-spacing:3px; cursor:pointer;
+  transition:all .2s; text-transform:uppercase; font-weight:700;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+}
+.btn-blue { border:1px solid var(--border); color:var(--blue); margin-top:8px; }
+.btn-blue:hover { background:var(--blue-g); box-shadow:0 0 20px rgba(79,195,247,.1); }
+.btn-red  { border:1px solid rgba(255,68,68,.4); color:var(--red); margin-top:8px; }
+.btn-red:hover  { background:var(--red-g); box-shadow:0 0 20px rgba(255,68,68,.15); }
+.btn-ghost{ border:1px solid var(--border2); color:var(--dim); margin-top:6px; }
+.btn-ghost:hover { border-color:var(--border); color:#7ab8d8; }
 
-  .modal h3 { color: #c4b5fd; margin-bottom: 12px; font-size: 1rem; }
-  .modal p { color: #94a3b8; font-size: 0.85rem; line-height: 1.6; margin-bottom: 16px; }
-  .modal textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px;
-    color: #fff;
-    font-size: 0.85rem;
-    resize: none;
-    height: 80px;
-    margin-bottom: 12px;
-    font-family: inherit;
-  }
+/* ── SYSTEM NOTIFY ── */
+.overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.88);
+  display:flex; align-items:center; justify-content:center;
+  z-index:500; padding:20px; opacity:0; pointer-events:none;
+  transition:opacity .3s;
+}
+.overlay.show { opacity:1; pointer-events:all; }
 
-  .hidden { display: none !important; }
+.sys-box {
+  background:var(--bg1); border:1px solid var(--border);
+  padding:32px 28px; max-width:360px; width:100%; text-align:center;
+  box-shadow:0 0 80px rgba(79,195,247,.15), inset 0 0 40px rgba(0,20,40,.5);
+  position:relative; overflow:hidden;
+  transform:scale(.9); transition:transform .3s;
+}
+.overlay.show .sys-box { transform:scale(1); }
+.sys-box::before,.sys-box::after {
+  content:''; position:absolute; left:0; right:0; height:1px;
+}
+.sys-box::before { top:0; background:linear-gradient(90deg,transparent,var(--blue),transparent); }
+.sys-box::after  { bottom:0; background:linear-gradient(90deg,transparent,var(--blue2),transparent); }
+.sys-corner { position:absolute; width:12px; height:12px; border:1px solid var(--blue); }
+.sys-corner.tl { top:0; right:0; border-width:1px 0 0 1px; }
+.sys-corner.tr { top:0; left:0;  border-width:1px 1px 0 0; }
+.sys-corner.bl { bottom:0; right:0; border-width:0 0 1px 1px; }
+.sys-corner.br { bottom:0; left:0;  border-width:0 1px 1px 0; }
 
-  .streak-milestones {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
+.sys-tag  { font-size:.58rem; letter-spacing:5px; color:var(--dim); margin-bottom:14px; }
+.sys-icon { font-size:3.5rem; margin:10px 0; display:block; animation:iconPop .5s ease both; }
+@keyframes iconPop {
+  from{transform:scale(0) rotate(-20deg);opacity:0}
+  80%{transform:scale(1.15) rotate(5deg)}
+  to{transform:scale(1) rotate(0);opacity:1}
+}
+.sys-title { font-family:'Cinzel',serif; font-size:1.2rem; font-weight:700; color:var(--gold); text-shadow:0 0 20px var(--gold-g); margin-bottom:8px; }
+.sys-body  { font-size:.78rem; color:#4a7a9b; line-height:1.7; margin-bottom:20px; }
 
-  .milestone {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
+/* PENALTY */
+.pen-box {
+  background:#05000a; border:1px solid rgba(255,68,68,.4);
+  box-shadow:0 0 80px rgba(255,68,68,.2);
+}
+.pen-box::before { background:linear-gradient(90deg,transparent,var(--red),transparent); }
+.pen-box::after  { background:linear-gradient(90deg,transparent,rgba(255,68,68,.4),transparent); }
+.pen-tag   { font-size:.58rem; letter-spacing:5px; color:var(--red); margin-bottom:12px; }
+.pen-title { font-family:'Cinzel',serif; font-size:1.2rem; color:var(--red); text-shadow:0 0 20px var(--red-g); margin-bottom:6px; }
+.pen-text  { font-size:.78rem; color:#5a2a2a; line-height:1.7; margin-bottom:14px; }
+.pen-challenge {
+  background:rgba(255,68,68,.06); border:1px solid rgba(255,68,68,.15);
+  padding:10px; margin-bottom:14px; font-size:.8rem; color:#cc5555;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
+.pen-textarea {
+  width:100%; background:rgba(10,0,0,.8); border:1px solid rgba(255,68,68,.15);
+  padding:10px; color:#cc6666; font-size:.78rem; resize:none;
+  height:68px; margin-bottom:12px; font-family:'Rajdhani',sans-serif;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
 
-  .milestone-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    transition: all 0.3s;
-  }
+/* TOAST */
+.toast {
+  position:fixed; bottom:22px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:rgba(3,6,15,.95); border:1px solid var(--border);
+  color:var(--blue); padding:10px 22px;
+  font-size:.72rem; letter-spacing:2px;
+  box-shadow:0 0 24px rgba(79,195,247,.2);
+  z-index:600; transition:transform .3s;
+  white-space:nowrap; font-family:'Rajdhani',sans-serif; font-weight:600;
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
 
-  .milestone-dot.reached { background: #a78bfa; box-shadow: 0 0 8px #7c3aed; }
-  .milestone-label { font-size: 0.65rem; color: #64748b; }
-
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #7c3aed;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    transition: transform 0.3s;
-    z-index: 200;
-    white-space: nowrap;
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  .section { display: none; }
-  .section.active { display: block; }
+/* RANK UP FLASH */
+@keyframes rankFlash {
+  0%   { box-shadow:0 0 0px var(--gold); }
+  50%  { box-shadow:0 0 80px var(--gold-g), 0 0 160px rgba(240,192,64,.1); }
+  100% { box-shadow:0 0 0px var(--gold); }
+}
+.rank-flash { animation:rankFlash 1.2s ease; }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>🧠 إعادة ضبط الدماغ</h1>
-  <p class="subtitle">رحلتك نحو حياة أوضح وأقوى</p>
+<div class="bg-layer">
+  <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
+  <div class="bg-vignette"></div>
+</div>
+<div id="ptx"></div>
 
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-tag">— SYSTEM INTERFACE —</div>
+    <div class="header-title">⚔ SHADOW MONARCH ⚔</div>
+    <div class="header-sub">ARISE · CONQUER · TRANSCEND</div>
+  </div>
+
+  <!-- HUNTER CARD -->
+  <div class="hcard" id="hcard">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    <div class="hcard-inner">
+
+      <div class="rank-row">
+        <div class="rank-left">
+          <div class="rank-hex" id="rankHex">
+            <span id="rankLetter">E</span>
+          </div>
+          <div class="rank-info">
+            <div class="rank-tag">HUNTER RANK</div>
+            <div class="rank-name" id="rankName">E-Rank Hunter</div>
+            <div class="rank-days-label">DAYS IN FIELD</div>
+          </div>
+        </div>
+        <div class="days-block">
+          <div class="days-num" id="dayCount">0</div>
+          <div class="days-unit">DAYS CLEAN</div>
+        </div>
+      </div>
+
+      <div class="xp-wrap">
+        <div class="xp-head">
+          <span class="xp-lbl">EXPERIENCE</span>
+          <span class="xp-val" id="xpDisp">0 / 100 XP</span>
+        </div>
+        <div class="xp-track">
+          <div class="xp-fill" id="xpFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-n">STR</div><div class="stat-v" id="sStr">01</div></div>
+        <div class="stat"><div class="stat-n">AGI</div><div class="stat-v" id="sAgi">01</div></div>
+        <div class="stat"><div class="stat-n">SENSE</div><div class="stat-v" id="sSen">01</div></div>
+        <div class="stat"><div class="stat-n">INT</div><div class="stat-v" id="sInt">01</div></div>
+        <div class="stat"><div class="stat-n">WILL</div><div class="stat-v" id="sWil">01</div></div>
+        <div class="stat"><div class="stat-n">FOCUS</div><div class="stat-v" id="sFoc">01</div></div>
+      </div>
+
+      <div class="ms-row">
+        <div class="ms"><div class="ms-dot" id="ms7"></div><div class="ms-l">7D</div></div>
+        <div class="ms"><div class="ms-dot" id="ms14"></div><div class="ms-l">14D</div></div>
+        <div class="ms"><div class="ms-dot" id="ms30"></div><div class="ms-l">30D</div></div>
+        <div class="ms"><div class="ms-dot" id="ms60"></div><div class="ms-l">60D</div></div>
+        <div class="ms"><div class="ms-dot" id="ms90"></div><div class="ms-l">90D</div></div>
+        <div class="ms"><div class="ms-dot" id="ms180"></div><div class="ms-l">180D</div></div>
+        <div class="ms"><div class="ms-dot" id="ms365"></div><div class="ms-l">365D</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab(0)">🏠 اليوم</button>
-    <button class="tab" onclick="switchTab(1)">📊 تقدمي</button>
-    <button class="tab" onclick="switchTab(2)">🔬 علم</button>
-    <button class="tab" onclick="switchTab(3)">⚡ إغراء</button>
+    <button class="tab active" onclick="tab(0)">QUESTS</button>
+    <button class="tab" onclick="tab(1)">SHADOWS</button>
+    <button class="tab" onclick="tab(2)">STATUS</button>
+    <button class="tab" onclick="tab(3)">LORE</button>
+    <button class="tab" onclick="tab(4)">URGE</button>
   </div>
 
-  <!-- TAB 0: TODAY -->
-  <div class="section active" id="tab0">
-    <div class="card">
-      <h2>⏱ عداد التعافي</h2>
-      <div class="counter-circle" id="counterCircle">
-        <div class="counter-number" id="dayCount">0</div>
-        <div class="counter-label">يوم نظيف</div>
-      </div>
-      <div class="phase-badge" id="phaseBadge"></div>
-      <p class="phase-text" id="phaseText"></p>
-      <div class="streak-milestones">
-        <div class="milestone"><div class="milestone-dot" id="m7"></div><div class="milestone-label">7 أيام</div></div>
-        <div class="milestone"><div class="milestone-dot" id="m14"></div><div class="milestone-label">14 يوم</div></div>
-        <div class="milestone"><div class="milestone-dot" id="m30"></div><div class="milestone-label">30 يوم</div></div>
-        <div class="milestone"><div class="milestone-dot" id="m60"></div><div class="milestone-label">60 يوم</div></div>
-        <div class="milestone"><div class="milestone-dot" id="m90"></div><div class="milestone-label">90 يوم</div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>✅ مهام اليوم</h2>
-      <div id="taskList"></div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="taskProgress" style="width:0%"></div>
-      </div>
-      <div class="progress-text">
-        <span id="taskDoneCount">0 مهام مكتملة</span>
-        <span id="taskPercent">0%</span>
+  <!-- S0: DAILY QUESTS -->
+  <div class="section active" id="s0">
+    <div class="panel">
+      <div class="panel-title">DAILY QUEST LOG</div>
+      <div id="questList"></div>
+      <div class="qp-wrap">
+        <div class="qp-track"><div class="qp-fill" id="qpFill" style="width:0%"></div></div>
+        <div class="qp-meta">
+          <span id="qDone">0 / 6 COMPLETED</span>
+          <span id="qXP">+0 XP EARNED</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TAB 1: PROGRESS -->
-  <div class="section" id="tab1">
-    <div class="card">
-      <h2>📈 إحصائياتي</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-        <div style="background:rgba(124,58,237,0.15);border-radius:12px;padding:14px;text-align:center;">
-          <div style="font-size:2rem;font-weight:bold;color:#a78bfa;" id="statBest">0</div>
-          <div style="font-size:0.75rem;color:#94a3b8;">أطول سلسلة</div>
-        </div>
-        <div style="background:rgba(34,197,94,0.1);border-radius:12px;padding:14px;text-align:center;">
-          <div style="font-size:2rem;font-weight:bold;color:#4ade80;" id="statCurrent">0</div>
-          <div style="font-size:0.75rem;color:#94a3b8;">السلسلة الحالية</div>
-        </div>
-        <div style="background:rgba(239,68,68,0.1);border-radius:12px;padding:14px;text-align:center;">
-          <div style="font-size:2rem;font-weight:bold;color:#f87171;" id="statRelapses">0</div>
-          <div style="font-size:0.75rem;color:#94a3b8;">انتكاسة</div>
-        </div>
-        <div style="background:rgba(251,191,36,0.1);border-radius:12px;padding:14px;text-align:center;">
-          <div style="font-size:2rem;font-weight:bold;color:#fbbf24;" id="statTasks">0</div>
-          <div style="font-size:0.75rem;color:#94a3b8;">مهمة مكتملة</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>📅 سجل الانتكاسات</h2>
-      <div id="relapseList">
-        <p style="color:#64748b;font-size:0.85rem;text-align:center;padding:10px;">لا توجد انتكاسات مسجلة — رائع! 🎉</p>
-      </div>
-      <button class="btn btn-danger" onclick="showRelapseModal()">⚠️ تسجيل انتكاسة</button>
+  <!-- S1: SHADOW ARMY -->
+  <div class="section" id="s1">
+    <div class="panel">
+      <div class="panel-title">SHADOW ARMY</div>
+      <div class="shadow-grid" id="shadowGrid"></div>
+      <div class="army-count">ACTIVE SHADOWS: <span id="armyCount">0</span> / 9</div>
     </div>
   </div>
 
-  <!-- TAB 2: SCIENCE -->
-  <div class="section" id="tab2">
-    <div class="card">
-      <h2>🔬 ماذا يحدث لدماغك؟</h2>
-
-      <div class="science-card">
-        <h3>🧪 الدوبامين والإدمان</h3>
-        <p>المحتوى الإباحي يطلق دوبامين بمستويات تفوق المحفزات الطبيعية 2-3 مرات. مع الوقت، يقل عدد مستقبلات الدوبامين، مما يجعل اللذة الطبيعية تبدو باهتة وغير كافية.</p>
+  <!-- S2: STATUS -->
+  <div class="section" id="s2">
+    <div class="panel">
+      <div class="panel-title">HUNTER STATUS</div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="sc-val" id="sc1" style="color:var(--blue)">0</div><div class="sc-lbl">CURRENT STREAK</div></div>
+        <div class="stat-card"><div class="sc-val" id="sc2" style="color:var(--gold)">0</div><div class="sc-lbl">BEST STREAK</div></div>
+        <div class="stat-card"><div class="sc-val" id="sc3" style="color:var(--red)">0</div><div class="sc-lbl">RELAPSES</div></div>
+        <div class="stat-card"><div class="sc-val" id="sc4" style="color:var(--green)">0</div><div class="sc-lbl">QUESTS DONE</div></div>
       </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">RELAPSE LOG</div>
+      <div id="relapseLog"></div>
+      <button class="btn btn-red" onclick="openPenalty()">⚠ REPORT RELAPSE</button>
+    </div>
+  </div>
 
-      <div class="science-card">
-        <h3>⏳ جدول التعافي العلمي</h3>
+  <!-- S3: LORE -->
+  <div class="section" id="s3">
+    <div class="panel">
+      <div class="panel-title">SYSTEM KNOWLEDGE</div>
+      <div class="lore">
+        <h3>🧪 DOPAMINE SYSTEM</h3>
+        <p>المحتوى الإباحي يطلق دوبامين أعلى من أي محفز طبيعي بـ2-3 أضعاف. مع التكرار، تتقلص مستقبلات الدوبامين — لذلك تبدو الحياة باهتة وبلا طعم.</p>
+      </div>
+      <div class="lore">
+        <h3>⏳ RECOVERY TIMELINE</h3>
         <p>
-          <strong style="color:#c4b5fd;">أيام 1-7:</strong> انسحاب، تهيج، صعوبة تركيز<br>
-          <strong style="color:#c4b5fd;">أيام 8-30:</strong> بدء إعادة بناء المستقبلات<br>
-          <strong style="color:#c4b5fd;">أيام 31-60:</strong> تحسن واضح في التركيز والطاقة<br>
-          <strong style="color:#c4b5fd;">أيام 61-90+:</strong> إعادة ضبط شبه كاملة
+          <span style="color:var(--red)">Days 1–7 ◈</span> انسحاب — الأصعب. صمود.<br>
+          <span style="color:#f97316">Days 8–30 ◈</span> إعادة بناء المستقبلات.<br>
+          <span style="color:var(--gold)">Days 31–60 ◈</span> طاقة وتركيز يعودان.<br>
+          <span style="color:var(--green)">Days 61–90 ◈</span> إعادة ضبط فعلية.<br>
+          <span style="color:var(--blue)">Days 90+ ◈</span> Shadow Monarch Mode.
         </p>
       </div>
-
-      <div class="science-card">
-        <h3>📱 تعفن الدماغ (Brain Rot)</h3>
-        <p>التمرير اللانهائي على منصات التواصل يدمر قدرة الدماغ على التركيز. الفيديوهات القصيرة تعيد برمجة الدماغ ليتوقع مكافأة كل 15 ثانية، مما يجعل المهام الطويلة مستحيلة.</p>
+      <div class="lore">
+        <h3>📱 BRAIN ROT PROTOCOL</h3>
+        <p>التمرير اللانهائي يعيد برمجة الدماغ ليتوقع مكافأة كل 15 ثانية. النتيجة: عجز تام عن التركيز. العلاج: مهام طويلة، ممل متعمد، صبر مبني.</p>
       </div>
-
-      <div class="science-card">
-        <h3>💡 ما يعيد بناء الدوبامين</h3>
+      <div class="lore">
+        <h3>💡 DOPAMINE REBUILDERS</h3>
         <p>
-          ✅ النوم الجيد (8 ساعات)<br>
-          ✅ التمرين البدني (يرفع الدوبامين 200%)<br>
-          ✅ التعرض للشمس في الصباح<br>
-          ✅ الصيام المتقطع<br>
-          ✅ الأهداف الصغيرة القابلة للتحقق
+          ◈ نوم 8 ساعات — يعيد ضبط المستقبلات<br>
+          ◈ تمرين — يرفع الدوبامين 200%<br>
+          ◈ شمس الصباح — ساعة بيولوجية<br>
+          ◈ صيام عن السكر — يرفع الحساسية<br>
+          ◈ مهام صعبة — يربط الجهد بالمكافأة
         </p>
       </div>
     </div>
   </div>
 
-  <!-- TAB 3: URGE -->
-  <div class="section" id="tab3">
-    <div class="card">
-      <h2>⚡ أنا في إغراء الآن</h2>
-      <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:14px;">لا بأس، هذا طبيعي. الإغراء يدوم فقط 10-20 دقيقة ثم يزول. اختر أحد هذه الإجراءات الآن:</p>
-
-      <div class="urge-tips">
-        <div class="urge-tip" onclick="urgeAction('coldWater')">
-          <div class="icon">🚿</div>
-          ماء بارد على الوجه
-        </div>
-        <div class="urge-tip" onclick="urgeAction('breathe')">
-          <div class="icon">🌬️</div>
-          تنفس 4-7-8
-        </div>
-        <div class="urge-tip" onclick="urgeAction('move')">
-          <div class="icon">🏃</div>
-          10 دقائق مشي
-        </div>
-        <div class="urge-tip" onclick="urgeAction('reason')">
-          <div class="icon">📝</div>
-          تذكر سببك
-        </div>
+  <!-- S4: URGE -->
+  <div class="section" id="s4">
+    <div class="panel">
+      <div class="panel-title">EMERGENCY PROTOCOL</div>
+      <p style="font-size:.75rem;color:var(--dim);margin-bottom:12px;line-height:1.7;letter-spacing:.5px;">
+        الإغراء يدوم 10–20 دقيقة. فعّل بروتوكول الآن:
+      </p>
+      <div class="urge-grid">
+        <div class="urge-btn" onclick="urge('cold')"><span class="u-i">🚿</span>COLD SHOCK</div>
+        <div class="urge-btn" onclick="urge('breathe')"><span class="u-i">🌬️</span>4-7-8 BREATH</div>
+        <div class="urge-btn" onclick="urge('move')"><span class="u-i">🏃</span>COMBAT MOVE</div>
+        <div class="urge-btn" onclick="urge('reason')"><span class="u-i">⚔️</span>RECALL PURPOSE</div>
+      </div>
+      <div class="urge-action" id="urgeAction">
+        <h3 id="urgeT"></h3>
+        <p id="urgeB"></p>
+        <button class="btn btn-blue" onclick="document.getElementById('urgeAction').style.display='none'">◈ MISSION COMPLETE</button>
       </div>
     </div>
-
-    <div class="card" id="urgeActionCard" style="display:none;">
-      <div id="urgeActionContent"></div>
+    <div class="panel">
+      <div class="panel-title">SYSTEM MESSAGE</div>
+      <div class="quote-box" id="quoteBox"></div>
+      <button class="btn btn-blue" onclick="newQuote()">↺ NEW TRANSMISSION</button>
     </div>
+  </div>
 
-    <div class="card">
-      <h2>💪 تذكر دائماً</h2>
-      <div id="motivationQuote" style="font-size:0.9rem;color:#c4b5fd;line-height:1.7;text-align:center;padding:10px;"></div>
-      <button class="btn btn-success" onclick="newQuote()" style="margin-top:10px;">🔄 اقتباس جديد</button>
-    </div>
+</div><!-- /wrap -->
+
+<!-- SYSTEM NOTIFY OVERLAY -->
+<div class="overlay" id="notifyOverlay">
+  <div class="sys-box">
+    <div class="sys-corner tl"></div><div class="sys-corner tr"></div>
+    <div class="sys-corner bl"></div><div class="sys-corner br"></div>
+    <div class="sys-tag">◈ SYSTEM NOTIFICATION ◈</div>
+    <span class="sys-icon" id="nIcon"></span>
+    <div class="sys-title" id="nTitle"></div>
+    <div class="sys-body" id="nBody"></div>
+    <button class="btn btn-blue" onclick="closeNotify()">[ CONFIRM ]</button>
   </div>
 </div>
 
-<!-- RELAPSE MODAL -->
-<div class="modal-overlay" id="relapseModal" onclick="closeModal(event)">
-  <div class="modal">
-    <h3>⚠️ تسجيل انتكاسة</h3>
-    <p>لا بأس — كل انتكاسة هي درس. ما الذي أدى إليها؟</p>
-    <textarea id="relapseTrigger" placeholder="مثال: كنت وحيداً في الليل وتعبت..."></textarea>
-    <button class="btn btn-danger" onclick="confirmRelapse()">تسجيل وإعادة البدء</button>
-    <button class="btn btn-primary" onclick="document.getElementById('relapseModal').style.display='none'">إلغاء</button>
+<!-- PENALTY OVERLAY -->
+<div class="overlay" id="penaltyOverlay">
+  <div class="sys-box pen-box">
+    <div class="sys-corner tl"></div><div class="sys-corner tr"></div>
+    <div class="sys-corner bl"></div><div class="sys-corner br"></div>
+    <div class="pen-tag">⚠ PENALTY QUEST ⚠</div>
+    <div class="pen-title">DEATH RECORDED</div>
+    <div class="pen-text">لقد سقطت يا Sung Jin-Woo. الضعيف يموت هنا — القوي يقبل العقوبة ويستمر.</div>
+    <div class="pen-challenge" id="penChallenge"></div>
+    <textarea class="pen-textarea" id="penCause" placeholder="ما الذي أدى للسقوط؟"></textarea>
+    <button class="btn btn-red" onclick="confirmRelapse()">⚔ ACCEPT & RESTART</button>
+    <button class="btn btn-ghost" onclick="closeOverlay('penaltyOverlay')">— CANCEL —</button>
   </div>
 </div>
 
@@ -501,220 +780,283 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// =========== STATE ===========
-let state = JSON.parse(localStorage.getItem('brainReset') || 'null') || {
+// ═══════════════ DATA ═══════════════
+const RANKS=[
+  {from:0,  l:'E',letter:'E',name:'E-Rank Hunter',    col:'#888888', xpMax:100 },
+  {from:8,  l:'D',letter:'D',name:'D-Rank Hunter',    col:'#39ff8a', xpMax:200 },
+  {from:15, l:'C',letter:'C',name:'C-Rank Hunter',    col:'#4fc3f7', xpMax:400 },
+  {from:31, l:'B',letter:'B',name:'B-Rank Hunter',    col:'#9c6fff', xpMax:700 },
+  {from:61, l:'A',letter:'A',name:'A-Rank Hunter',    col:'#f0c040', xpMax:1200},
+  {from:91, l:'S',letter:'S',name:'S-Rank Hunter',    col:'#ff8c00', xpMax:2500},
+  {from:181,l:'N',letter:'N',name:'National Level',   col:'#ff4444', xpMax:5000},
+  {from:366,l:'★',letter:'★',name:'Shadow Monarch',   col:'#9c6fff', xpMax:9999},
+];
+
+const SHADOWS=[
+  {id:'iron',   name:'IRON',    icon:'🗡️', day:7,   desc:'Guardian'},
+  {id:'fang',   name:'FANG',    icon:'🐺', day:14,  desc:'Wolf Shadow'},
+  {id:'tank',   name:'TANK',    icon:'🛡️', day:30,  desc:'Iron Shield'},
+  {id:'igris',  name:'IGRIS',   icon:'⚔️', day:60,  desc:'Commander'},
+  {id:'beru',   name:'BERU',    icon:'🪲', day:90,  desc:'Ant King'},
+  {id:'bellion',name:'BELLION', icon:'👁️', day:180, desc:'Eternal Guard'},
+  {id:'greed',  name:'GREED',   icon:'💀', day:270, desc:'Abyss Warrior'},
+  {id:'monarch',name:'MONARCH', icon:'👑', day:365, desc:'Shadow Lord'},
+  {id:'arise',  name:'???',     icon:'🌑', day:500, desc:'???'},
+];
+
+const QUESTS=[
+  {id:'q1',txt:'استيقظ مبكراً وصلِّ الفجر 🌅',xp:15},
+  {id:'q2',txt:'لا هاتف 30 دقيقة بعد الاستيقاظ 📵',xp:20},
+  {id:'q3',txt:'تمرين أو مشي 20 دقيقة 🏋️',xp:25},
+  {id:'q4',txt:'اقرأ أو تعلم شيئاً 30 دقيقة 📚',xp:20},
+  {id:'q5',txt:'لا سكر أو طعام مضر 🥗',xp:15},
+  {id:'q6',txt:'نم قبل الساعة 11 مساءً 🌙',xp:25},
+];
+
+const PENALTIES=[
+  '100 ضغطة صدر قبل النوم',
+  '5 كيلومترات مشي اليوم',
+  '30 دقيقة تأمل صامت الآن',
+  'لا هاتف لمدة 3 ساعات',
+  'اكتب 3 صفحات عن أهدافك يدوياً',
+];
+
+const QUOTES=[
+  '"أنا لن أموت هنا — لدي ظلال تنتظر أن تُولد."',
+  '"الضعيف لم يُصنع ضعيفاً — الضعيف اختار الضعف."',
+  '"كل يوم تقاوم، يكبر جيشك في الظلام."',
+  '"الظلام داخلك ليس عدوك — هو سلاحك إذا أحكمت قيادته."',
+  '"Sung Jin-Woo لم يصبح Monarch في يوم — بل في ألف قرار صغير."',
+  '"الإغراء يدوم 20 دقيقة. الندم يدوم سنوات."',
+  '"الأقوياء لا يملكون حياة أسهل — لديهم إرادة أقوى."',
+];
+
+const URGE_DATA={
+  cold:   {t:'COLD SHOCK PROTOCOL',   b:'اذهب للحمام الآن. اغسل وجهك بماء بارد 5 مرات. الصدمة الحرارية تكسر حلقة الإغراء فوراً وتوقف مسار الدوبامين المنحرف.'},
+  breathe:{t:'4-7-8 SEQUENCE',        b:'استنشق 4 ثوانٍ ← احبس 7 ثوانٍ ← أخرج 8 ثوانٍ. كرر 4 مرات. يفعّل الجهاز العصبي الهادئ ويقطع الإغراء على المستوى الفسيولوجي.'},
+  move:   {t:'COMBAT MOVEMENT ORDER', b:'اخرج من الغرفة الآن. امشِ أو اركض 10 دقائق. الحركة تحول مسار الدوبامين — فعالية 87% وفقاً للدراسات العلمية.'},
+  reason: {t:'RECALL PURPOSE',        b:'اكتب الآن: لماذا بدأت؟ ماذا ستخسر إذا سقطت؟ من تريد أن تكون؟ اقرأ بصوت عالٍ. دماغك يحتاج لسماع قرارك.'},
+};
+
+// ═══════════════ STATE ═══════════════
+let S = JSON.parse(localStorage.getItem('smv2')||'null') || {
   startDate: new Date().toISOString(),
-  relapses: [],
-  tasksDoneTotal: 0,
-  bestStreak: 0,
-  todayTasks: {},
-  lastTaskReset: new Date().toDateString()
+  xp:0, totalXP:0,
+  relapses:[], tasksDoneTotal:0, bestStreak:0,
+  todayTasks:{}, lastReset: new Date().toDateString(),
+  unlockedShadows:[], prevRank:'E',
 };
 
-const TASKS = [
-  { id: 't1', text: 'صلِّ الفجر أو استيقظ مبكراً 🌅', xp: 10 },
-  { id: 't2', text: 'لا هاتف 30 دقيقة بعد الاستيقاظ 📵', xp: 15 },
-  { id: 't3', text: 'تمرين أو مشي 20 دقيقة على الأقل 🏃', xp: 20 },
-  { id: 't4', text: 'اقرأ أو تعلم شيئاً مفيداً 30 دقيقة 📚', xp: 15 },
-  { id: 't5', text: 'لا سكر أو طعام مضر اليوم 🥗', xp: 10 },
-  { id: 't6', text: 'نم قبل الساعة 11 مساءً 🌙', xp: 20 },
-];
+// ═══════════════ HELPERS ═══════════════
+const $ = id => document.getElementById(id);
+const days = () => Math.floor((Date.now()-new Date(S.startDate))/86400000);
+const rank = d => { let r=RANKS[0]; for(const x of RANKS) if(d>=x.from) r=x; return r; };
+const pad  = n => String(n).padStart(2,'0');
 
-const QUOTES = [
-  "الانضباط هو الحرية الحقيقية. كل مرة تقاوم فيها، تعيد بناء نفسك.",
-  "دماغك يتغير كل يوم — إما تبنيه أو تهدمه. أنت تختار.",
-  "الإغراء يدوم 20 دقيقة. ندم السنين يدوم سنين.",
-  "أقوى الرجال هم من يتحكمون في أنفسهم، لا فيمن حولهم.",
-  "كل يوم نظيف هو خلايا عصبية جديدة تنمو في دماغك.",
-  "لست مدمناً — أنت إنسان يتعلم كيف يعيش بشكل أفضل.",
-  "المعركة ليست ضد الرغبة — بل معها. اعترف بها ثم تجاوزها."
-];
-
-const PHASES = [
-  { max: 7, label: '🔴 مرحلة الانسحاب', color: '#ef4444', text: 'الأيام الأولى هي الأصعب. جسمك يتكيف. الأعراض طبيعية تماماً — صمد.' },
-  { max: 14, label: '🟠 إعادة التوازن', color: '#f97316', text: 'دماغك يبدأ في إصلاح المستقبلات. قد تشعر بتحسن ثم تراجع — هذا طبيعي.' },
-  { max: 30, label: '🟡 بداية التعافي', color: '#eab308', text: 'الدوبامين يعود تدريجياً. ستلاحظ تحسناً في التركيز والطاقة.' },
-  { max: 60, label: '🟢 التعافي الفعلي', color: '#22c55e', text: 'دماغك يعيد برمجة نفسه. الأمور الجميلة في الحياة تبدأ بالعودة.' },
-  { max: 90, label: '💙 إعادة الضبط', color: '#3b82f6', text: 'مستويات الدوبامين تقترب من الطبيعي. أنت في المرحلة المتقدمة!' },
-  { max: Infinity, label: '💜 تحرر كامل', color: '#a78bfa', text: 'أنت في مرحلة التحرر. دماغك تغير بشكل حقيقي. واصل.' },
-];
-
-const URGE_ACTIONS = {
-  coldWater: { icon: '🚿', title: 'ماء بارد على الوجه', steps: 'اذهب للحمام الآن. اغسل وجهك بماء بارد 5 مرات متتالية. الصدمة الحرارية تكسر حلقة الإغراء فوراً.' },
-  breathe: { icon: '🌬️', title: 'تنفس 4-7-8', steps: 'استنشق 4 ثوان ← احبس 7 ثوان ← أخرج ببطء 8 ثوان. كرر 4 مرات. هذا يفعّل الجهاز العصبي الهادئ.' },
-  move: { icon: '🏃', title: '10 دقائق مشي', steps: 'اخرج من الغرفة الآن. امشِ 10 دقائق في أي مكان. الحركة تحول مسار الدوبامين فوراً.' },
-  reason: { icon: '📝', title: 'تذكر سببك', steps: 'اكتب على ورقة الآن: لماذا أفعل هذا؟ ماذا سأخسر إذا انتكست؟ من سيتأثر؟' },
-};
-
-// =========== INIT ===========
-function init() {
-  resetDailyTasks();
-  renderAll();
-  newQuote();
+function stats(d,xp){
+  const b = Math.floor(d/7)+1;
+  return {
+    str: Math.min(99,b+Math.floor(xp/200)),
+    agi: Math.min(99,b+Math.floor(xp/250)),
+    sen: Math.min(99,b+Math.floor(xp/300)),
+    int: Math.min(99,b+Math.floor(xp/180)),
+    wil: Math.min(99,b+Math.floor(d/5)),
+    foc: Math.min(99,b+Math.floor(xp/220)),
+  };
 }
 
-function resetDailyTasks() {
-  const today = new Date().toDateString();
-  if (state.lastTaskReset !== today) {
-    state.todayTasks = {};
-    state.lastTaskReset = today;
-    save();
-  }
-}
+const save = () => localStorage.setItem('smv2',JSON.stringify(S));
 
-function getDays() {
-  return Math.floor((Date.now() - new Date(state.startDate)) / 86400000);
-}
-
-function getPhase(days) {
-  for (let p of PHASES) if (days <= p.max) return p;
-  return PHASES[PHASES.length - 1];
-}
-
+// ═══════════════ RENDER ═══════════════
 function renderAll() {
-  const days = getDays();
-  const phase = getPhase(days);
+  const d = days();
+  const rk = rank(d);
+  const st = stats(d,S.totalXP);
 
-  // Counter
-  document.getElementById('dayCount').textContent = days;
-  document.getElementById('phaseBadge').textContent = phase.label;
-  document.getElementById('phaseBadge').style.background = phase.color + '33';
-  document.getElementById('phaseBadge').style.color = phase.color;
-  document.getElementById('phaseText').textContent = phase.text;
+  // Rank up check
+  if(rk.letter!==S.prevRank){
+    setTimeout(()=>showNotify('RANK ADVANCEMENT',rk.letter,`رتبتك ارتقت إلى ${rk.name}. قوتك تتصاعد.`), 400);
+    $('hcard').classList.add('rank-flash');
+    setTimeout(()=>$('hcard').classList.remove('rank-flash'),1300);
+    S.prevRank=rk.letter; save();
+  }
 
-  // Circle gradient
-  const deg = Math.min((days / 90) * 360, 360);
-  document.getElementById('counterCircle').style.background =
-    `conic-gradient(${phase.color} ${deg}deg, rgba(255,255,255,0.05) ${deg}deg)`;
+  // Shadow unlocks
+  for(const sh of SHADOWS){
+    if(d>=sh.day && !S.unlockedShadows.includes(sh.id)){
+      S.unlockedShadows.push(sh.id);
+      setTimeout(()=>showNotify('SHADOW UNLOCKED',sh.icon,`${sh.name} انضم لجيشك. "${sh.desc}"`),700);
+      save();
+    }
+  }
 
-  // Milestones
-  [7, 14, 30, 60, 90].forEach(m => {
-    const el = document.getElementById('m' + m);
-    if (days >= m) el.classList.add('reached');
-    else el.classList.remove('reached');
+  // Hunter card
+  $('dayCount').textContent = d;
+  $('rankLetter').textContent = rk.letter;
+  $('rankHex').style.background = `linear-gradient(135deg, ${rk.col}33, ${rk.col}11)`;
+  $('rankHex').style.borderColor = rk.col;
+  $('rankHex').style.boxShadow = `0 0 30px ${rk.col}44`;
+  $('rankLetter').style.color = rk.col;
+  $('rankLetter').style.textShadow = `0 0 20px ${rk.col}`;
+  $('rankName').textContent = rk.name;
+  $('rankName').style.color = rk.col;
+
+  const xpPct = Math.min(100,(S.xp/rk.xpMax)*100);
+  $('xpFill').style.width = xpPct+'%';
+  $('xpDisp').textContent = `${S.xp} / ${rk.xpMax} XP`;
+
+  $('sStr').textContent = pad(st.str);
+  $('sAgi').textContent = pad(st.agi);
+  $('sSen').textContent = pad(st.sen);
+  $('sInt').textContent = pad(st.int);
+  $('sWil').textContent = pad(st.wil);
+  $('sFoc').textContent = pad(st.foc);
+
+  [7,14,30,60,90,180,365].forEach(m=>{
+    const el = $('ms'+m);
+    if(d>=m) el.classList.add('lit');
+    else el.classList.remove('lit');
   });
 
-  // Stats
-  document.getElementById('statCurrent').textContent = days;
-  document.getElementById('statBest').textContent = Math.max(state.bestStreak, days);
-  document.getElementById('statRelapses').textContent = state.relapses.length;
-  document.getElementById('statTasks').textContent = state.tasksDoneTotal;
+  // Status
+  $('sc1').textContent = d;
+  $('sc2').textContent = Math.max(S.bestStreak,d);
+  $('sc3').textContent = S.relapses.length;
+  $('sc4').textContent = S.tasksDoneTotal;
 
-  // Tasks
-  renderTasks();
-
-  // Relapses
+  renderQuests();
+  renderShadows();
   renderRelapses();
 }
 
-function renderTasks() {
-  const list = document.getElementById('taskList');
-  list.innerHTML = '';
-  let done = 0;
-
-  TASKS.forEach(task => {
-    const isDone = !!state.todayTasks[task.id];
-    if (isDone) done++;
-    const div = document.createElement('div');
-    div.className = 'task-item' + (isDone ? ' done' : '');
-    div.onclick = () => toggleTask(task.id);
-    div.innerHTML = `
-      <div class="task-checkbox">${isDone ? '✓' : ''}</div>
-      <div class="task-text">${task.text}</div>
-      <div class="task-xp">+${task.xp}</div>
-    `;
-    list.appendChild(div);
+function renderQuests(){
+  const list=$('questList'); list.innerHTML='';
+  let done=0, xpE=0;
+  QUESTS.forEach(q=>{
+    const ok=!!S.todayTasks[q.id];
+    if(ok){done++;xpE+=q.xp;}
+    const d=document.createElement('div');
+    d.className='quest'+(ok?' done':'');
+    d.onclick=()=>toggleQ(q.id,q.xp);
+    d.innerHTML=`<div class="q-box">${ok?'✓':''}</div><div class="q-text">${q.txt}</div><div class="q-xp">+${q.xp} XP</div>`;
+    list.appendChild(d);
   });
-
-  const pct = Math.round((done / TASKS.length) * 100);
-  document.getElementById('taskProgress').style.width = pct + '%';
-  document.getElementById('taskDoneCount').textContent = done + ' من ' + TASKS.length;
-  document.getElementById('taskPercent').textContent = pct + '%';
+  const pct=Math.round((done/QUESTS.length)*100);
+  $('qpFill').style.width=pct+'%';
+  $('qDone').textContent=`${done} / ${QUESTS.length} COMPLETED`;
+  $('qXP').textContent=`+${xpE} XP EARNED`;
 }
 
-function toggleTask(id) {
-  if (state.todayTasks[id]) {
-    delete state.todayTasks[id];
-  } else {
-    state.todayTasks[id] = true;
-    state.tasksDoneTotal++;
-    showToast('✅ أحسنت! استمر!');
-  }
-  save();
-  renderTasks();
-  document.getElementById('statTasks').textContent = state.tasksDoneTotal;
+function toggleQ(id,xp){
+  if(S.todayTasks[id]){delete S.todayTasks[id]; S.xp=Math.max(0,S.xp-xp); S.totalXP=Math.max(0,S.totalXP-xp);}
+  else{ S.todayTasks[id]=true; S.xp+=xp; S.totalXP+=xp; S.tasksDoneTotal++; toast(`[ +${xp} XP ACQUIRED ]`); }
+  save(); renderAll();
 }
 
-function renderRelapses() {
-  const list = document.getElementById('relapseList');
-  if (state.relapses.length === 0) {
-    list.innerHTML = '<p style="color:#64748b;font-size:0.85rem;text-align:center;padding:10px;">لا توجد انتكاسات مسجلة — رائع! 🎉</p>';
+function renderShadows(){
+  const g=$('shadowGrid'); g.innerHTML='';
+  SHADOWS.forEach(sh=>{
+    const ok=S.unlockedShadows.includes(sh.id);
+    const d=document.createElement('div');
+    d.className='sh-card '+(ok?'unlocked':'locked');
+    d.innerHTML=`<span class="sh-icon">${sh.icon}</span><div class="sh-name">${sh.name}</div><div class="sh-sub">${ok?sh.desc:'DAY '+sh.day}</div>`;
+    g.appendChild(d);
+  });
+  $('armyCount').textContent=S.unlockedShadows.length;
+}
+
+function renderRelapses(){
+  const log=$('relapseLog');
+  if(!S.relapses.length){
+    log.innerHTML='<div style="font-size:.68rem;color:var(--dimmer);text-align:center;padding:12px;letter-spacing:2px;">NO RELAPSES RECORDED — IMPRESSIVE</div>';
     return;
   }
-  list.innerHTML = '';
-  [...state.relapses].reverse().slice(0, 5).forEach(r => {
-    const div = document.createElement('div');
-    div.className = 'relapse-item';
-    div.innerHTML = `<div class="relapse-date">${new Date(r.date).toLocaleDateString('ar')}</div>${r.trigger || 'لم يُذكر سبب'}`;
-    list.appendChild(div);
+  log.innerHTML='';
+  [...S.relapses].reverse().slice(0,5).forEach(r=>{
+    const d=document.createElement('div');
+    d.className='relapse-entry';
+    d.innerHTML=`<div class="relapse-meta">${new Date(r.date).toLocaleDateString('ar')} ◈ ${r.streak} DAYS LOST</div>${r.cause||'—'}`;
+    log.appendChild(d);
   });
 }
 
-function showRelapseModal() {
-  document.getElementById('relapseModal').style.display = 'flex';
+// ═══════════════ URGE ═══════════════
+function urge(t){
+  const u=URGE_DATA[t];
+  $('urgeT').textContent=u.t; $('urgeB').textContent=u.b;
+  const el=$('urgeAction'); el.style.display='block';
+  el.scrollIntoView({behavior:'smooth'});
 }
 
-function closeModal(e) {
-  if (e.target.id === 'relapseModal') document.getElementById('relapseModal').style.display = 'none';
+// ═══════════════ NOTIFY ═══════════════
+function showNotify(title,icon,body){
+  $('nIcon').textContent=icon; $('nTitle').textContent=title; $('nBody').textContent=body;
+  $('notifyOverlay').classList.add('show');
+}
+function closeNotify(){ $('notifyOverlay').classList.remove('show'); }
+
+// ═══════════════ PENALTY ═══════════════
+function openPenalty(){
+  $('penChallenge').textContent='⚔ PENALTY: '+PENALTIES[Math.floor(Math.random()*PENALTIES.length)];
+  $('penaltyOverlay').classList.add('show');
+}
+function closeOverlay(id){ $(id).classList.remove('show'); }
+function confirmRelapse(){
+  const cause=$('penCause').value;
+  const d=days();
+  S.bestStreak=Math.max(S.bestStreak,d);
+  S.relapses.push({date:new Date().toISOString(),cause,streak:d});
+  S.startDate=new Date().toISOString();
+  S.xp=0; S.unlockedShadows=[]; S.prevRank='E';
+  closeOverlay('penaltyOverlay');
+  $('penCause').value='';
+  save(); renderAll();
+  showNotify('DEATH RECORDED','💀',`سقطت بعد ${d} أيام. لكن Sung Jin-Woo وقع أكثر منك وعاد أقوى. ARISE.`);
 }
 
-function confirmRelapse() {
-  const trigger = document.getElementById('relapseTrigger').value;
-  const days = getDays();
-  state.bestStreak = Math.max(state.bestStreak, days);
-  state.relapses.push({ date: new Date().toISOString(), trigger, daysStreak: days });
-  state.startDate = new Date().toISOString();
-  document.getElementById('relapseModal').style.display = 'none';
-  document.getElementById('relapseTrigger').value = '';
-  save();
-  renderAll();
-  showToast('💪 إعادة البدء — أنت أقوى مما تعتقد!');
+// ═══════════════ TABS ═══════════════
+function tab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.section').forEach((s,j)=>s.classList.toggle('active',i===j));
 }
 
-function urgeAction(type) {
-  const a = URGE_ACTIONS[type];
-  const card = document.getElementById('urgeActionCard');
-  document.getElementById('urgeActionContent').innerHTML = `
-    <h2>${a.icon} ${a.title}</h2>
-    <p style="color:#c4b5fd;font-size:0.9rem;line-height:1.7;margin-top:10px;">${a.steps}</p>
-    <button class="btn btn-success" style="margin-top:14px;" onclick="document.getElementById('urgeActionCard').style.display='none'">✅ تم</button>
-  `;
-  card.style.display = 'block';
-  card.scrollIntoView({ behavior: 'smooth' });
+// ═══════════════ QUOTE ═══════════════
+function newQuote(){ $('quoteBox').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)]; }
+
+// ═══════════════ TOAST ═══════════════
+function toast(msg){
+  const t=$('toast'); t.textContent=msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-function newQuote() {
-  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-  document.getElementById('motivationQuote').textContent = '"' + q + '"';
-}
+// ═══════════════ PARTICLES ═══════════════
+(function(){
+  const c=$('ptx');
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div'); p.className='pt';
+    const s=1+Math.random()*2.5;
+    p.style.cssText=`
+      left:${Math.random()*100}%;
+      width:${s}px; height:${s}px;
+      animation-duration:${10+Math.random()*18}s;
+      animation-delay:${Math.random()*12}s;
+      opacity:${0.15+Math.random()*0.4};
+    `;
+    if(Math.random()>.7) p.style.background='var(--purple)';
+    if(Math.random()>.85) p.style.background='var(--gold)';
+    c.appendChild(p);
+  }
+})();
 
-function switchTab(i) {
-  document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
-  document.querySelectorAll('.section').forEach((s, idx) => s.classList.toggle('active', idx === i));
-}
+// ═══════════════ RESET DAILY ═══════════════
+(function(){
+  const today=new Date().toDateString();
+  if(S.lastReset!==today){ S.todayTasks={}; S.lastReset=today; save(); }
+})();
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-function save() {
-  localStorage.setItem('brainReset', JSON.stringify(state));
-}
-
-init();
+// ═══════════════ INIT ═══════════════
+renderAll();
+newQuote();
 </script>
 </body>
 </html>
